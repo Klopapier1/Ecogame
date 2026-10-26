@@ -7,20 +7,20 @@
 <style>
   :root {
     --bg: #f6f3ec; --card: #ffffff; --ink: #1f1c17; --muted: #6f685c; --line: #e4ddd0;
-    --accent: #2f6f5e; --accent-ink: #ffffff; --warn: #b5532f; --gold: #a87b12;
-    --gem: #7a5ab8; --silver: #6c7a86; --sapphire: #2c5fb3; --diamond: #2a9bb0;
+    --accent: #2f6f5e; --accent-ink: #ffffff; --warn: #b5532f; --gold: #a87b12; --up: #2f7d4a;
+    --gem: #7a5ab8; --silver: #6c7a86; --sapphire: #2c5fb3; --diamond: #2a9bb0; --ring: #b0782a; --necklace: #b03f6e;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #16140f; --card: #211e18; --ink: #efe9dd; --muted: #a49c8d; --line: #353026;
-      --accent: #5fb39b; --accent-ink: #0f1a16; --warn: #e08a68; --gold: #e2b54a;
-      --gem: #b39ae6; --silver: #a9b6c1; --sapphire: #7aa3ec; --diamond: #6fd0e2;
+      --accent: #5fb39b; --accent-ink: #0f1a16; --warn: #e08a68; --gold: #e2b54a; --up: #6cc98a;
+      --gem: #b39ae6; --silver: #a9b6c1; --sapphire: #7aa3ec; --diamond: #6fd0e2; --ring: #e0aa5c; --necklace: #e07aa5;
     }
   }
   :root[data-theme="dark"] {
     --bg: #16140f; --card: #211e18; --ink: #efe9dd; --muted: #a49c8d; --line: #353026;
-    --accent: #5fb39b; --accent-ink: #0f1a16; --warn: #e08a68; --gold: #e2b54a;
-    --gem: #b39ae6; --silver: #a9b6c1; --sapphire: #7aa3ec; --diamond: #6fd0e2;
+    --accent: #5fb39b; --accent-ink: #0f1a16; --warn: #e08a68; --gold: #e2b54a; --up: #6cc98a;
+    --gem: #b39ae6; --silver: #a9b6c1; --sapphire: #7aa3ec; --diamond: #6fd0e2; --ring: #e0aa5c; --necklace: #e07aa5;
   }
   * { box-sizing: border-box; }
   body {
@@ -30,35 +30,46 @@
   }
   main { max-width: 760px; margin: 0 auto; padding: 0 16px; }
   header { position: sticky; top: 0; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--line); }
-  .top { max-width: 760px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+  .top { max-width: 760px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 6px 16px; align-items: baseline; flex-wrap: wrap; }
   .top h1 { font-size: 17px; margin: 0; margin-right: auto; }
   .stat { font-variant-numeric: tabular-nums; white-space: nowrap; }
   .stat b { font-size: 18px; }
   .stat small { color: var(--muted); }
   .gold { color: var(--gold); }
+  .neg { color: var(--warn); }
+  .pos { color: var(--up); }
   section { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin: 14px 0; }
-  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; display: flex; justify-content: space-between; gap: 8px; }
+  h2 span { text-transform: none; letter-spacing: 0; font-size: 13px; }
   button {
     font: inherit; border: 1px solid var(--line); background: var(--card); color: var(--ink);
-    border-radius: 8px; padding: 7px 12px; cursor: pointer; min-height: 38px;
+    border-radius: 8px; padding: 6px 11px; cursor: pointer; min-height: 38px;
   }
   button:hover:not(:disabled) { border-color: var(--accent); }
   button:disabled { opacity: .4; cursor: not-allowed; }
   button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
-  .row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
-  .row:first-of-type { border-top: 0; }
-  .row .name { flex: 1 1 140px; min-width: 0; }
+  .row { display: flex; align-items: center; gap: 8px; padding: 9px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .row:first-child { border-top: 0; }
+  .row .name { flex: 1 1 150px; min-width: 0; }
   .row .name small { display: block; color: var(--muted); }
-  .qty { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 3ch; text-align: right; }
+  .price { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 4ch; text-align: right; }
+  .price small { display: block; font-weight: 400; font-size: 12px; }
+  .qty { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 4ch; text-align: right; }
+  .qty small { display: block; font-weight: 400; font-size: 12px; color: var(--muted); }
+  .btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .spark { width: 64px; height: 24px; flex: none; }
   .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   @media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; } }
   .buy { border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-  .buy p { margin: 0; color: var(--muted); font-size: 13px; }
+  .buy p { margin: 0; color: var(--muted); font-size: 13px; flex: 1; }
   .pips { letter-spacing: 2px; color: var(--accent); }
   .empty { color: var(--muted); font-style: italic; padding: 4px 0; }
   .report { margin: 0; padding-left: 18px; }
   .report li { margin: 2px 0; }
+  .meter { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+  .meter i { display: block; height: 100%; background: var(--accent); }
+  .meter.full i { background: var(--warn); }
   .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px solid var(--line); z-index: 2; }
   .bar div { max-width: 760px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 10px; align-items: center; }
   .bar button.primary { flex: 1; min-height: 46px; font-size: 16px; }
@@ -79,6 +90,7 @@
   <h1>💎 Gem Tycoon</h1>
   <span class="stat"><small>Round</small> <b id="round"></b></span>
   <span class="stat"><small>Gold</small> <b class="gold" id="gold"></b></span>
+  <span class="stat"><small>Upkeep</small> <b id="upkeep"></b></span>
   <span class="stat"><small>Net worth</small> <b id="worth"></b></span>
 </div></header>
 
@@ -91,7 +103,8 @@
   </section>
 
   <section>
-    <h2>Market</h2>
+    <h2>Market <span id="storageText"></span></h2>
+    <div class="meter" id="storageMeter"><i></i></div>
     <div id="market"></div>
     <div style="margin-top:10px"><button id="sellEverything">Sell everything</button></div>
   </section>
@@ -101,19 +114,29 @@
     <div class="grid2">
       <div class="buy">
         <b>⛏️ Mine</b>
-        <p id="mineInfo"></p>
+        <p>Produces 3 uncut gems (20%) or 2 silver (80%) each round.</p>
         <button class="primary" id="buyMine"></button>
       </div>
       <div class="buy">
         <b>🔨 Jeweller</b>
-        <p id="jewInfo"></p>
-        <button class="primary" id="buyJew"></button>
+        <p>Cuts 2 uncut gems a round into sapphires (80%) or diamonds (20%). Each cut fails 10% of the time.</p>
+        <button class="primary" id="buyJeweller"></button>
+      </div>
+      <div class="buy">
+        <b>💍 Goldsmith</b>
+        <p>Crafts 2 pieces a round: a ring from 1 silver + 1 sapphire, or a necklace from 2 silver + 1 diamond.</p>
+        <button class="primary" id="buySmith"></button>
+      </div>
+      <div class="buy">
+        <b>📦 Warehouse</b>
+        <p id="storageInfo"></p>
+        <button class="primary" id="buyStorage"></button>
       </div>
     </div>
   </section>
 
   <section id="buildingsSection">
-    <h2>Your buildings</h2>
+    <h2>Your buildings <span id="overheadText"></span></h2>
     <div id="buildings"></div>
   </section>
 
@@ -126,13 +149,15 @@
     <details>
       <summary>Rules</summary>
       <ul class="report">
-        <li>You have <b>50 rounds</b> and start with <b>1000 gold</b>. Whoever has the most gold at the end wins. Goods you haven't sold count for nothing.</li>
-        <li>A <b>mine</b> produces 3 uncut gems (20%) or 2 silver (80%) each round.</li>
-        <li>A <b>jeweller</b> cuts 2 uncut gems per round. Each cut fails 10% of the time and the gem is lost. Otherwise you get a sapphire (80%) or a diamond (20%).</li>
-        <li>Each mine or jeweller you already own makes the next one 15% more expensive.</li>
-        <li>An <b>upgrade</b> costs 300 gold, up to 3 per building. Each one adds +20% output and +10 points to the rare outcome (gems / diamonds). On a jeweller it also cuts the failure rate by 3 points.</li>
-        <li>Prices: diamond 150, sapphire 80, silver 40, uncut gem 30.</li>
-        <li>Buildings produce when you press <b>End round</b>, including ones you bought that round. Mines produce first and jewellers then cut from your stock, best-upgraded jewellers first.</li>
+        <li>You have <b>25 rounds</b> and start with <b>1000 gold</b>. Whoever has the most gold at the end wins. Goods you haven't sold count for nothing.</li>
+        <li><b>Mine:</b> each round, 3 uncut gems (20%) or 2 silver (80%).</li>
+        <li><b>Jeweller:</b> cuts 2 uncut gems a round. Each cut fails 10% of the time and the gem is lost. Otherwise you get a sapphire (80%) or a diamond (20%).</li>
+        <li><b>Goldsmith:</b> crafts 2 pieces a round, either a ring (1 silver + 1 sapphire) or a necklace (2 silver + 1 diamond). On <i>auto</i>, it makes whichever is worth more than its materials at current prices, and nothing if neither is.</li>
+        <li>Each building of a type you already own makes the next one 12% more expensive. An <b>upgrade</b> costs 300, up to 3 per building, and adds +20% output. On a mine it also adds +10 points to the gem chance. On a jeweller it adds +10 points to the diamond chance and lowers the failure rate by 3 points.</li>
+        <li><b>Market:</b> each unit you sell lowers that good's price, and the price recovers 35% of the way back each round. Prices also drift at random, with occasional rushes and crashes.</li>
+        <li><b>Upkeep:</b> each round you pay wages of 15 per mine, 20 per jeweller and 30 per goldsmith. Each building after the first adds 5% overhead on top. If you can't pay, your most valuable goods are sold automatically. You can sell a building for 50% of what you paid for it.</li>
+        <li><b>Warehouse:</b> holds 40 goods to start. Anything over the limit at the end of a round is lost, cheapest goods first.</li>
+        <li>Order at the end of each round: mines, then jewellers, then goldsmiths (best-upgraded first), then the warehouse limit, then upkeep, then the market moves.</li>
       </ul>
     </details>
     <div style="margin-top:10px"><button id="newGame">Start new game</button></div>
@@ -143,23 +168,36 @@
 
 <script>
 const CFG = {
-  rounds: 50,
+  rounds: 25,
   startGold: 1000,
-  growth: 1.15,
-  mineBase: 400,
-  jewellerBase: 500,
+  growth: 1.12,
   upgradeCost: 300,
   maxLevel: 3,
-  prices: { diamond: 150, sapphire: 80, silver: 40, gem: 30 },
+  refund: 0.5,
+  overhead: 0.05,
+  recovery: 0.35,
+  storageBase: 40,
+  storageStep: 40,
+  storageCost: 200,
+  buildings: {
+    mine:     { base: 300, upkeep: 15, label: '⛏️ Mine' },
+    jeweller: { base: 400, upkeep: 20, label: '🔨 Jeweller' },
+    smith:    { base: 550, upkeep: 30, label: '💍 Goldsmith' },
+  },
 };
+// drop = price fall per unit sold; order = most valuable first (also the forced-sale order)
 const GOODS = [
-  { key: 'diamond',  label: 'Diamonds',   color: 'var(--diamond)' },
-  { key: 'sapphire', label: 'Sapphires',  color: 'var(--sapphire)' },
-  { key: 'silver',   label: 'Silver',     color: 'var(--silver)' },
-  { key: 'gem',      label: 'Uncut gems', color: 'var(--gem)' },
+  { key: 'necklace', label: 'Necklaces',  base: 450, drop: 0.025, color: 'var(--necklace)' },
+  { key: 'ring',     label: 'Rings',      base: 220, drop: 0.02, color: 'var(--ring)' },
+  { key: 'diamond',  label: 'Diamonds',   base: 150, drop: 0.02, color: 'var(--diamond)' },
+  { key: 'sapphire', label: 'Sapphires',  base: 80,  drop: 0.015, color: 'var(--sapphire)' },
+  { key: 'silver',   label: 'Silver',     base: 40,  drop: 0.01,  color: 'var(--silver)' },
+  { key: 'gem',      label: 'Uncut gems', base: 30,  drop: 0.01,  color: 'var(--gem)' },
 ];
-const SAVE_KEY = 'gemtycoon.game';
-const BOARD_KEY = 'gemtycoon.leaderboard';
+const GOOD = Object.fromEntries(GOODS.map(g => [g.key, g]));
+const KINDS = Object.keys(CFG.buildings);
+const SAVE_KEY = 'gemtycoon.game.v2';
+const BOARD_KEY = 'gemtycoon.leaderboard.v2';
 const NAME_KEY = 'gemtycoon.name';
 
 let rand = Math.random;
@@ -175,42 +213,111 @@ function store(key, value) {
 // ---- rules ----
 const mineStats = lvl => ({ gemChance: 0.2 + 0.1 * lvl, mult: 1 + 0.2 * lvl });
 const jewellerStats = lvl => ({ capacity: 2 * (1 + 0.2 * lvl), fail: 0.10 - 0.03 * lvl, diamondChance: 0.2 + 0.1 * lvl });
+const smithStats = lvl => ({ capacity: 2 * (1 + 0.2 * lvl) });
 const priceFor = (base, owned) => Math.round(base * Math.pow(CFG.growth, owned) / 10) * 10;
-const minePrice = () => priceFor(CFG.mineBase, state.mines.length);
-const jewellerPrice = () => priceFor(CFG.jewellerBase, state.jewellers.length);
+const buildPrice = kind => priceFor(CFG.buildings[kind].base, state[kind].length);
+const storageExpandCost = () => CFG.storageCost * (state.storageLevel + 1);
+const capacity = () => CFG.storageBase + CFG.storageStep * state.storageLevel;
+const stored = () => GOODS.reduce((s, g) => s + state.inv[g.key], 0);
+const buildingCount = () => KINDS.reduce((s, k) => s + state[k].length, 0);
+const overheadMult = () => 1 + CFG.overhead * Math.max(0, buildingCount() - 1);
+const upkeepTotal = () => Math.round(KINDS.reduce((s, k) => s + state[k].length * CFG.buildings[k].upkeep, 0) * overheadMult());
 // 3.6 -> 3 with 40%, 4 with 60%: the expected value stays exact.
 const randRound = x => Math.floor(x) + (rand() < x - Math.floor(x) ? 1 : 0);
+const gauss = () => Math.sqrt(-2 * Math.log(1 - rand())) * Math.cos(2 * Math.PI * rand());
+const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
 const pct = x => Math.round(x * 100) + '%';
 
+// ---- market ----
+const price = key => Math.max(1, Math.round(GOOD[key].base * state.market[key].sat * state.market[key].trend));
+
+// Gold from selling n units, walking the price down unit by unit; mutates only when commit.
+function saleValue(key, n, commit = false) {
+  const m = state.market[key];
+  let sat = m.sat, total = 0;
+  for (let i = 0; i < n; i++) {
+    total += Math.max(1, Math.round(GOOD[key].base * sat * m.trend));
+    sat = Math.max(0.2, sat * (1 - GOOD[key].drop));
+  }
+  if (commit) m.sat = sat;
+  return total;
+}
+
+function moveMarket(r) {
+  for (const g of GOODS) {
+    const m = state.market[g.key];
+    m.sat += (1 - m.sat) * CFG.recovery;
+    m.trend = clamp(m.trend + (1 - m.trend) * 0.15 + gauss() * 0.07, 0.6, 1.6);
+    const roll = rand();
+    if (roll < 0.025) { m.trend = clamp(m.trend * 1.4, 0.6, 1.6); r.events.push(`📈 ${g.label} rush! Prices jump.`); }
+    else if (roll < 0.05) { m.trend = clamp(m.trend * 0.7, 0.6, 1.6); r.events.push(`📉 ${g.label} crash! Prices tumble.`); }
+    m.hist.push(price(g.key));
+    if (m.hist.length > 12) m.hist.shift();
+  }
+}
+
 function newGame() {
+  const market = {};
+  for (const g of GOODS) market[g.key] = { sat: 1, trend: 1, hist: [g.base] };
   return {
-    round: 1, gold: CFG.startGold, phase: 'play', nextId: 1,
-    inv: { gem: 0, silver: 0, sapphire: 0, diamond: 0 },
-    mines: [], jewellers: [], report: null,
+    v: 2, round: 1, gold: CFG.startGold, phase: 'play', nextId: 1, storageLevel: 0,
+    inv: Object.fromEntries(GOODS.map(g => [g.key, 0])),
+    mine: [], jeweller: [], smith: [], market, report: null, scoreT: null,
   };
 }
 
-let state = load(SAVE_KEY, null) || newGame();
-
+let state = load(SAVE_KEY, null);
+if (!state || state.v !== 2) state = newGame();
 
 function netWorth() {
-  return state.gold + GOODS.reduce((s, g) => s + state.inv[g.key] * CFG.prices[g.key], 0);
+  return state.gold + GOODS.reduce((s, g) => s + state.inv[g.key] * price(g.key), 0);
 }
 
 // ---- actions ----
 function buy(kind) {
-  const cost = kind === 'mine' ? minePrice() : jewellerPrice();
+  const cost = buildPrice(kind);
   if (state.phase !== 'play' || state.gold < cost) return;
   state.gold -= cost;
-  (kind === 'mine' ? state.mines : state.jewellers).push({ id: state.nextId++, level: 0 });
+  const b = { id: state.nextId++, level: 0, paid: cost };
+  if (kind === 'smith') b.mode = 'auto';
+  state[kind].push(b);
   commit();
 }
 
+function expandStorage() {
+  const cost = storageExpandCost();
+  if (state.phase !== 'play' || state.gold < cost) return;
+  state.gold -= cost;
+  state.storageLevel++;
+  commit();
+}
+
+function findBuilding(kind, id) { return state[kind].find(x => x.id === id); }
+
 function upgrade(kind, id) {
-  const b = (kind === 'mine' ? state.mines : state.jewellers).find(x => x.id === id);
+  const b = findBuilding(kind, id);
   if (state.phase !== 'play' || !b || b.level >= CFG.maxLevel || state.gold < CFG.upgradeCost) return;
   state.gold -= CFG.upgradeCost;
+  b.paid += CFG.upgradeCost;
   b.level++;
+  commit();
+}
+
+function demolish(kind, id) {
+  const b = findBuilding(kind, id);
+  if (state.phase !== 'play' || !b) return;
+  const refund = Math.round(b.paid * CFG.refund);
+  if (!confirm(`Sell this building for ${fmt(refund)} gold?`)) return;
+  state.gold += refund;
+  state[kind] = state[kind].filter(x => x !== b);
+  commit();
+}
+
+const MODES = ['auto', 'ring', 'necklace'];
+function cycleMode(id) {
+  const b = findBuilding('smith', id);
+  if (!b || state.phase !== 'play') return;
+  b.mode = MODES[(MODES.indexOf(b.mode) + 1) % MODES.length];
   commit();
 }
 
@@ -218,17 +325,34 @@ function sell(key, n) {
   if (state.phase === 'over') return;
   n = Math.min(n, state.inv[key]);
   if (n <= 0) return;
+  state.gold += saleValue(key, n, true);
   state.inv[key] -= n;
-  state.gold += n * CFG.prices[key];
   commit();
+}
+
+const RECIPES = {
+  ring:     { needs: { silver: 1, sapphire: 1 } },
+  necklace: { needs: { silver: 2, diamond: 1 } },
+};
+const canCraft = item => Object.entries(RECIPES[item].needs).every(([k, n]) => state.inv[k] >= n);
+const margin = item => price(item) - Object.entries(RECIPES[item].needs).reduce((s, [k, n]) => s + n * price(k), 0);
+
+function pickRecipe(mode) {
+  if (mode !== 'auto') return canCraft(mode) ? mode : null;
+  const options = ['necklace', 'ring'].filter(i => canCraft(i) && margin(i) > 0);
+  options.sort((a, b) => margin(b) - margin(a));
+  return options[0] || null;
 }
 
 function endRound() {
   if (state.phase === 'final') return finishGame();
   if (state.phase !== 'play') return;
 
-  const r = { gem: 0, silver: 0, cut: 0, sapphire: 0, diamond: 0, broken: 0, idle: 0 };
-  for (const m of state.mines) {
+  const r = { round: state.round, gem: 0, silver: 0, cut: 0, sapphire: 0, diamond: 0, broken: 0, idleCut: 0,
+              ring: 0, necklace: 0, idleCraft: 0, lost: {}, upkeep: 0, forced: 0, events: [] };
+  const byLevel = list => [...list].sort((a, b) => b.level - a.level);
+
+  for (const m of state.mine) {
     const s = mineStats(m.level);
     if (rand() < s.gemChance) r.gem += randRound(3 * s.mult);
     else r.silver += randRound(2 * s.mult);
@@ -236,25 +360,51 @@ function endRound() {
   state.inv.gem += r.gem;
   state.inv.silver += r.silver;
 
-  const jewellers = [...state.jewellers].sort((a, b) => b.level - a.level);
-  for (const j of jewellers) {
+  for (const j of byLevel(state.jeweller)) {
     const s = jewellerStats(j.level);
     const want = randRound(s.capacity);
     const n = Math.min(want, state.inv.gem);
-    r.idle += want - n;
+    r.idleCut += want - n;
     state.inv.gem -= n;
     r.cut += n;
     for (let i = 0; i < n; i++) {
       if (rand() < s.fail) r.broken++;
-      else if (rand() < s.diamondChance) r.diamond++;
-      else r.sapphire++;
+      else if (rand() < s.diamondChance) { r.diamond++; state.inv.diamond++; }
+      else { r.sapphire++; state.inv.sapphire++; }
     }
   }
-  state.inv.sapphire += r.sapphire;
-  state.inv.diamond += r.diamond;
-  r.round = state.round;
-  state.report = r;
 
+  for (const g of byLevel(state.smith)) {
+    const want = randRound(smithStats(g.level).capacity);
+    for (let i = 0; i < want; i++) {
+      const item = pickRecipe(g.mode);
+      if (!item) { r.idleCraft += want - i; break; }
+      for (const [k, n] of Object.entries(RECIPES[item].needs)) state.inv[k] -= n;
+      state.inv[item]++;
+      r[item]++;
+    }
+  }
+
+  // warehouse limit: drop the cheapest goods first
+  let over = stored() - capacity();
+  for (const g of [...GOODS].reverse()) {
+    if (over <= 0) break;
+    const n = Math.min(over, state.inv[g.key]);
+    if (n > 0) { state.inv[g.key] -= n; r.lost[g.label] = n; over -= n; }
+  }
+
+  r.upkeep = upkeepTotal();
+  state.gold -= r.upkeep;
+  // can't pay: sell the most valuable goods one at a time
+  for (const g of GOODS) {
+    while (state.gold < 0 && state.inv[g.key] > 0) {
+      const got = saleValue(g.key, 1, true);
+      state.gold += got; state.inv[g.key]--; r.forced += got;
+    }
+  }
+
+  moveMarket(r);
+  state.report = r;
   if (state.round >= CFG.rounds) state.phase = 'final';
   else state.round++;
   commit();
@@ -286,10 +436,19 @@ function commit() { store(SAVE_KEY, state); render(); }
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('en-US');
 
+function sparkline(hist, color) {
+  if (hist.length < 2) return `<svg class="spark"></svg>`;
+  const lo = Math.min(...hist), hi = Math.max(...hist), span = hi - lo || 1;
+  const pts = hist.map((v, i) => `${(i / (hist.length - 1) * 62 + 1).toFixed(1)},${(22 - (v - lo) / span * 20).toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 64 24" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+}
+
 function render() {
   const over = state.phase === 'over', final = state.phase === 'final', play = state.phase === 'play';
   $('round').textContent = over || final ? 'done' : `${state.round} / ${CFG.rounds}`;
   $('gold').textContent = fmt(state.gold);
+  $('gold').className = state.gold < 0 ? 'neg' : 'gold';
+  $('upkeep').textContent = '−' + fmt(upkeepTotal());
   $('worth').textContent = fmt(netWorth());
 
   // final-sale / game-over panel
@@ -297,16 +456,15 @@ function render() {
   if (final) {
     os.hidden = false;
     os.innerHTML = `<div class="over">
-      <h2>All ${CFG.rounds} rounds played</h2>
+      <h2 style="justify-content:center">All ${CFG.rounds} rounds played</h2>
       <p>Sell your remaining goods, because anything left unsold is worth nothing. Then enter your name and finish.</p>
       <input type="text" id="playerName" maxlength="20" placeholder="Your name" value="${escapeHtml(load(NAME_KEY, ''))}">
     </div>`;
   } else if (over) {
     os.hidden = false;
-    const board = load(BOARD_KEY, []);
-    const rank = board.findIndex(e => e.t === state.scoreT);
+    const rank = load(BOARD_KEY, []).findIndex(e => e.t === state.scoreT);
     os.innerHTML = `<div class="over">
-      <h2>Game over</h2>
+      <h2 style="justify-content:center">Game over</h2>
       <div class="big gold">${fmt(state.gold)} gold</div>
       <p class="muted">${rank >= 0 ? `You placed #${rank + 1} on the leaderboard.` : 'Not enough for the top 10 this time.'}</p>
       <button class="primary" id="againBtn">Play again</button>
@@ -316,58 +474,63 @@ function render() {
     os.hidden = true;
   }
 
-  // report
-  const r = state.report;
-  $('reportSection').hidden = !r || over;
-  if (r) {
-    $('reportTitle').textContent = `Round ${r.round} production`;
-    const items = [];
-    if (state.mines.length) items.push(`Mines produced <b>${r.gem}</b> uncut gems and <b>${r.silver}</b> silver.`);
-    if (state.jewellers.length) {
-      items.push(`Jewellers cut <b>${r.cut}</b> gems into <b>${r.sapphire}</b> sapphires and <b>${r.diamond}</b> diamonds` +
-        (r.broken ? `, but <b>${r.broken}</b> broke.` : '.'));
-      if (r.idle) items.push(`<span class="muted">${r.idle} cutting slots went unused because there weren't enough uncut gems.</span>`);
-    }
-    if (!items.length) items.push('<span class="muted">You have no buildings yet, so nothing was produced.</span>');
-    $('report').innerHTML = items.map(i => `<li>${i}</li>`).join('');
-  }
+  renderReport(over);
+
+  // storage
+  const used = stored(), cap = capacity();
+  $('storageText').textContent = `Warehouse ${used} / ${cap}`;
+  $('storageMeter').className = 'meter' + (used >= cap ? ' full' : '');
+  $('storageMeter').firstElementChild.style.width = Math.min(100, used / cap * 100) + '%';
 
   // market
   $('market').innerHTML = GOODS.map(g => {
-    const q = state.inv[g.key];
+    const q = state.inv[g.key], p = price(g.key), dev = p / g.base - 1;
     const dis = q === 0 || over ? 'disabled' : '';
+    const n10 = Math.min(10, q);
+    const devCls = Math.abs(dev) < 0.03 ? 'muted' : dev > 0 ? 'pos' : 'neg';
     return `<div class="row">
       <span class="name"><span class="dot" style="background:${g.color}"></span>${g.label}
-        <small>${CFG.prices[g.key]} gold each</small></span>
-      <span class="qty">${q}</span>
-      <button ${dis} data-sell="${g.key}" data-n="1">Sell 1</button>
-      <button ${dis} data-sell="${g.key}" data-n="all">Sell all · ${fmt(q * CFG.prices[g.key])}</button>
+        <small>base price ${g.base}</small></span>
+      ${sparkline(state.market[g.key].hist, g.color)}
+      <span class="price">${p}<small class="${devCls}">${dev >= 0 ? '+' : ''}${Math.round(dev * 100)}%</small></span>
+      <span class="qty">${q}<small>owned</small></span>
+      <span class="btns">
+        <button ${dis} data-sell="${g.key}" data-n="1">Sell 1</button>
+        <button ${q < 2 || over ? 'disabled' : ''} data-sell="${g.key}" data-n="10">Sell ${n10 > 1 ? n10 : 10}</button>
+        <button ${dis} data-sell="${g.key}" data-n="all">All · ${fmt(saleValue(g.key, q))}</button>
+      </span>
     </div>`;
   }).join('');
-  $('sellEverything').disabled = over || GOODS.every(g => state.inv[g.key] === 0);
+  $('sellEverything').disabled = over || used === 0;
 
   // build
   $('buildSection').hidden = !play;
-  const mp = minePrice(), jp = jewellerPrice();
-  $('mineInfo').textContent = `Produces 3 uncut gems (20%) or 2 silver (80%) per round. You own ${state.mines.length}.`;
-  $('jewInfo').textContent = `Cuts 2 uncut gems per round into sapphires or diamonds, with a 10% chance each cut fails. You own ${state.jewellers.length}.`;
-  $('buyMine').textContent = `Buy for ${fmt(mp)} gold`;
-  $('buyJew').textContent = `Buy for ${fmt(jp)} gold`;
-  $('buyMine').disabled = state.gold < mp;
-  $('buyJew').disabled = state.gold < jp;
+  for (const [kind, id] of [['mine', 'buyMine'], ['jeweller', 'buyJeweller'], ['smith', 'buySmith']]) {
+    const p = buildPrice(kind);
+    $(id).textContent = `Buy for ${fmt(p)} · upkeep ${CFG.buildings[kind].upkeep}`;
+    $(id).disabled = state.gold < p;
+  }
+  $('storageInfo').textContent = `Adds ${CFG.storageStep} storage, from ${cap} to ${cap + CFG.storageStep}. The cost rises with each expansion.`;
+  $('buyStorage').textContent = `Expand for ${fmt(storageExpandCost())}`;
+  $('buyStorage').disabled = state.gold < storageExpandCost();
 
   // buildings
   $('buildingsSection').hidden = over;
+  $('overheadText').textContent = buildingCount() > 1 ? `overhead +${Math.round((overheadMult() - 1) * 100)}%` : '';
   const rows = [];
-  state.mines.forEach((m, i) => {
+  state.mine.forEach((m, i) => {
     const s = mineStats(m.level);
-    rows.push(buildingRow('mine', m, `⛏️ Mine ${i + 1}`,
+    rows.push(buildingRow('mine', m, i,
       `${pct(s.gemChance)}: ${(3 * s.mult).toFixed(1)} gems · ${pct(1 - s.gemChance)}: ${(2 * s.mult).toFixed(1)} silver`));
   });
-  state.jewellers.forEach((j, i) => {
+  state.jeweller.forEach((j, i) => {
     const s = jewellerStats(j.level);
-    rows.push(buildingRow('jeweller', j, `🔨 Jeweller ${i + 1}`,
+    rows.push(buildingRow('jeweller', j, i,
       `cuts ${s.capacity.toFixed(1)}/round · ${pct(s.fail)} fail · ${pct(s.diamondChance)} diamond`));
+  });
+  state.smith.forEach((g, i) => {
+    rows.push(buildingRow('smith', g, i, `crafts ${smithStats(g.level).capacity.toFixed(1)}/round`,
+      `<button ${play ? '' : 'disabled'} data-mode="${g.id}" title="Change what this goldsmith makes">Makes: ${g.mode}</button>`));
   });
   $('buildings').innerHTML = rows.join('') || '<div class="empty">Nothing yet. Start by buying a mine.</div>';
 
@@ -385,13 +548,37 @@ function render() {
   eb.textContent = over ? 'Game over' : final ? 'Finish game' : state.round === CFG.rounds ? 'End final round' : `End round ${state.round}`;
 }
 
-function buildingRow(kind, b, title, stats) {
+function renderReport(over) {
+  const r = state.report;
+  $('reportSection').hidden = !r || over;
+  if (!r) return;
+  $('reportTitle').textContent = `Round ${r.round} report`;
+  const items = [];
+  if (state.mine.length) items.push(`Your mines produced <b>${r.gem}</b> uncut gems and <b>${r.silver}</b> silver.`);
+  if (r.cut || r.idleCut) items.push(`Your jewellers cut <b>${r.cut}</b> gems into <b>${r.sapphire}</b> sapphires and <b>${r.diamond}</b> diamonds` +
+    (r.broken ? `, and <b>${r.broken}</b> broke.` : '.') + (r.idleCut ? ` <span class="muted">${r.idleCut} cuts were skipped for lack of gems.</span>` : ''));
+  if (r.ring || r.necklace || r.idleCraft) items.push(`Your goldsmiths crafted <b>${r.ring}</b> rings and <b>${r.necklace}</b> necklaces.` +
+    (r.idleCraft ? ` <span class="muted">${r.idleCraft} pieces were not made (missing materials, or auto judged it unprofitable).</span>` : ''));
+  const lost = Object.entries(r.lost);
+  if (lost.length) items.push(`<span class="neg">Warehouse full! Lost ${lost.map(([k, n]) => `${n} ${k.toLowerCase()}`).join(', ')}.</span>`);
+  if (r.upkeep) items.push(`You paid <b>${fmt(r.upkeep)}</b> gold in upkeep.`);
+  if (r.forced) items.push(`<span class="neg">You couldn't cover upkeep, so goods worth ${fmt(r.forced)} gold were sold automatically.</span>`);
+  items.push(...r.events);
+  if (!items.length) items.push('<span class="muted">You have no buildings yet, so nothing was produced.</span>');
+  $('report').innerHTML = items.map(i => `<li>${i}</li>`).join('');
+}
+
+function buildingRow(kind, b, i, stats, extra = '') {
   const pips = '●'.repeat(b.level) + '○'.repeat(CFG.maxLevel - b.level);
   const maxed = b.level >= CFG.maxLevel;
-  const dis = maxed || state.gold < CFG.upgradeCost || state.phase !== 'play' ? 'disabled' : '';
+  const play = state.phase === 'play';
+  const dis = maxed || state.gold < CFG.upgradeCost || !play ? 'disabled' : '';
   return `<div class="row">
-    <span class="name">${title} <span class="pips" title="Upgrade level">${pips}</span><small>${stats}</small></span>
-    <button ${dis} data-upgrade="${kind}" data-id="${b.id}">${maxed ? 'Max level' : `Upgrade · ${CFG.upgradeCost}`}</button>
+    <span class="name">${CFG.buildings[kind].label} ${i + 1} <span class="pips" title="Upgrade level">${pips}</span><small>${stats}</small></span>
+    <span class="btns">${extra}
+      <button ${dis} data-upgrade="${kind}" data-id="${b.id}">${maxed ? 'Max level' : `Upgrade · ${CFG.upgradeCost}`}</button>
+      <button ${play ? '' : 'disabled'} data-demolish="${kind}" data-id="${b.id}" title="Sell for 50% of what you paid">Sell · ${fmt(Math.round(b.paid * CFG.refund))}</button>
+    </span>
   </div>`;
 }
 
@@ -401,15 +588,19 @@ function escapeHtml(s) {
 
 // ---- wiring ----
 $('buyMine').onclick = () => buy('mine');
-$('buyJew').onclick = () => buy('jeweller');
+$('buyJeweller').onclick = () => buy('jeweller');
+$('buySmith').onclick = () => buy('smith');
+$('buyStorage').onclick = expandStorage;
 $('endRound').onclick = endRound;
 $('newGame').onclick = restart;
 $('sellEverything').onclick = () => GOODS.forEach(g => sell(g.key, state.inv[g.key]));
 document.addEventListener('click', e => {
-  const s = e.target.closest('[data-sell]');
-  if (s) return sell(s.dataset.sell, s.dataset.n === 'all' ? state.inv[s.dataset.sell] : 1);
-  const u = e.target.closest('[data-upgrade]');
-  if (u) return upgrade(u.dataset.upgrade, Number(u.dataset.id));
+  const t = e.target.closest('button');
+  if (!t) return;
+  if (t.dataset.sell) return sell(t.dataset.sell, t.dataset.n === 'all' ? state.inv[t.dataset.sell] : Number(t.dataset.n));
+  if (t.dataset.upgrade) return upgrade(t.dataset.upgrade, Number(t.dataset.id));
+  if (t.dataset.demolish) return demolish(t.dataset.demolish, Number(t.dataset.id));
+  if (t.dataset.mode) return cycleMode(Number(t.dataset.mode));
 });
 
 render();
