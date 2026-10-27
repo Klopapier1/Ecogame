@@ -238,7 +238,9 @@ const CFG = {
   applicants: 3,
   expGain: 0.05,           // skill bonus per round spent on a task
   expCap: 10,              // rounds after which experience stops adding
-  buyMarkup: 1.25,         // raw goods cost this much more than they sell for
+  buyMarkup: 1.25,
+  loanRound: 4,             // Bank loan perk pays out at the start of this round
+  loanAmount: 600,         // raw goods cost this much more than they sell for
   buildings: {
     mine:     { label: '⛏️ Mine' },
     jeweller: { base: 400, upkeep: 20, label: '🔨 Jeweller',   name: 'Jeweller' },
@@ -281,10 +283,10 @@ const SITES = {
 };
 
 const PERKS = {
-  charter:    { name: 'Mining charter',  desc: 'Mines cost 30% less.' },
+  charter:    { name: 'Mining charter',  desc: 'Mines pay half upkeep.' },
   cutter:     { name: 'Master cutter',   desc: 'Jewellers get +10 points diamond chance.' },
-  workshop:   { name: 'Family workshop', desc: 'Start with a free goldsmith.' },
-  loan:       { name: 'Bank loan',       desc: '+600 gold now, but upkeep is 25% higher all game.' },
+  workshop:   { name: 'Family help',     desc: 'A relative works for you for free: a second unpaid worker with 100% skill.' },
+  loan:       { name: 'Bank loan',       desc: '+600 gold at the start of round 4, but upkeep is 25% higher all game.' },
   warehouse:  { name: 'Old warehouse',   desc: '+60 storage space.' },
   friend:     { name: 'Merchant friend', desc: 'Your sales push prices down only half as much.' },
   silverRights: { name: 'Silver rights', desc: 'Silver sells for 25% more.' },
@@ -341,7 +343,7 @@ const smithStats = lvl => ({ capacity: 2 * (1 + 0.2 * lvl) * guildBonus('smith')
 const processorStats = (kind, lvl) => ({ capacity: PROCESSORS[kind].capacity * (1 + 0.2 * lvl) * guildBonus(kind) });
 const priceFor = (base, owned) => Math.round(base * Math.pow(CFG.growth, owned) / 10) * 10;
 const buildPrice = kind => priceFor(CFG.buildings[kind].base, state[kind].length);
-const sitePrice = offer => priceFor(CFG.mineBase * SITES[offer.type].price * (hasPerk('charter') ? 0.7 : 1), state.mine.length);
+const sitePrice = offer => priceFor(CFG.mineBase * SITES[offer.type].price, state.mine.length);
 const storageExpandCost = () => CFG.storageCost * (state.storageLevel + 1);
 const capacity = () => CFG.storageBase + CFG.storageStep * state.storageLevel + (hasPerk('warehouse') ? 60 : 0);
 const stored = () => GOODS.reduce((s, g) => s + state.inv[g.key], 0);
@@ -350,7 +352,7 @@ const kindCount = () => new Set([...state.mine.map(m => m.type), ...GUILDS.filte
 const overheadMult = () => 1 + CFG.overhead * Math.max(0, kindCount() - 1);
 // a building of this kind can be bought: already in its guild, or a licence is still free
 const canJoin = kind => kind === 'mine' || state.guilds.includes(kind) || state.guilds.length < CFG.maxGuilds;
-const buildingUpkeep = (kind, b) => kind === 'mine' ? SITES[b.type].upkeep : CFG.buildings[kind].upkeep;
+const buildingUpkeep = (kind, b) => kind === 'mine' ? SITES[b.type].upkeep * (hasPerk('charter') ? 0.5 : 1) : CFG.buildings[kind].upkeep;
 function upkeepTotal() {
   const base = KINDS.reduce((s, k) => s + state[k].reduce((t, b) => t + buildingUpkeep(k, b), 0), 0);
   return Math.round(base * overheadMult() * (hasPerk('loan') ? 1.25 : 1) * (hasPerk('thrifty') ? 0.7 : 1));
@@ -570,7 +572,7 @@ function newGame() {
     v: 5, round: 1, gold: CFG.startGold, phase: 'perk', nextId: 1, storageLevel: 0,
     inv: Object.fromEntries(GOODS.map(g => [g.key, 0])),
     mine: [], jeweller: [], smith: [], mint: [], glass: [], guilds: [], sites: [], market, orders: {},
-    workers: [{ id: 0, name: 'You', you: true, skill: 1, wage: 0, at: null, exp: {} }], applicants: [],
+    workers: [{ id: 0, name: 'You', you: true, skill: 1, wage: 0, at: null, exp: {} }], applicants: [], loanPaid: false,
     perk: null, perkOffers: shuffled(Object.keys(PERKS)).slice(0, 3),
     event: null, strike: 0, rushes: [], debts: [],
     report: null, scoreT: null,
@@ -601,15 +603,13 @@ if (state && state.v === 4) {
   if (state.phase === 'play') rollApplicants();
 }
 if (!state || state.v !== 5) state = newGame();
+// games started before the loan was deferred already got the 600 at the start
+if (state.loanPaid === undefined) state.loanPaid = true;
 
 function choosePerk(id) {
   if (state.phase !== 'perk' || !state.perkOffers.includes(id)) return;
   state.perk = id;
-  if (id === 'workshop') {
-    state.smith.push({ id: state.nextId++, level: 0, paid: 0, mode: 'auto' });
-    state.guilds.push('smith');
-  }
-  if (id === 'loan') state.gold += 600;
+  if (id === 'workshop') state.workers.push({ id: state.nextId++, name: 'Your cousin', family: true, skill: 1, wage: 0, at: null, exp: {} });
   state.phase = 'play';
   rollSites();
   rollApplicants();
@@ -667,7 +667,7 @@ function hire(id) {
 
 function fire(id) {
   const w = state.workers.find(w => w.id === id);
-  if (state.phase !== 'play' || !w || w.you) return;
+  if (state.phase !== 'play' || !w || w.you || w.family) return;
   state.workers = state.workers.filter(x => x !== w);
   commit();
 }
@@ -860,7 +860,7 @@ function endRound() {
   // still short: the newest hires go unpaid and quit
   for (const w of [...state.workers].reverse()) {
     if (state.gold >= 0) break;
-    if (w.you) continue;
+    if (!w.wage) continue;
     state.gold += w.wage; r.wages -= w.wage;
     state.workers = state.workers.filter(x => x !== w);
     r.quit.push(w.name);
@@ -874,6 +874,11 @@ function endRound() {
     state.event = null;
   } else {
     state.round++;
+    if (hasPerk('loan') && !state.loanPaid && state.round >= CFG.loanRound) {
+      state.gold += CFG.loanAmount;
+      state.loanPaid = true;
+      r.events.push(`🏦 The bank paid out your loan: +${fmt(CFG.loanAmount)} gold.`);
+    }
     rollSites();
     rollApplicants();
     maybeEvent();
@@ -1057,10 +1062,10 @@ function renderWorkers(play, hide) {
       return `<option value="${v}" ${v === cur ? 'selected' : ''} ${v !== cur && n >= CFG.slots ? 'disabled' : ''}>${name} (${n}/${CFG.slots})</option>`;
     })].join('');
     return `<div class="row">
-      <span class="name">${escapeHtml(w.name)}${w.you ? '<span class="tag">you</span>' : ''}
-        <small>${workerSkill(w)} · ${w.you ? 'no wage' : `wage ${w.wage}`}</small></span>
+      <span class="name">${escapeHtml(w.name)}${w.you ? '<span class="tag">you</span>' : w.family ? '<span class="tag">family</span>' : ''}
+        <small>${workerSkill(w)} · ${w.wage ? `wage ${w.wage}` : 'no wage'}</small></span>
       <span class="btns"><select data-assign="${w.id}" ${play ? '' : 'disabled'} aria-label="Assign ${escapeHtml(w.name)}">${opts}</select>
-        ${w.you ? '' : `<button ${play ? '' : 'disabled'} data-fire="${w.id}">Let go</button>`}</span>
+        ${w.you || w.family ? '' : `<button ${play ? '' : 'disabled'} data-fire="${w.id}">Let go</button>`}</span>
     </div>`;
   }).join('');
   $('applicants').innerHTML = state.applicants.map(a => `<div class="row">
@@ -1114,10 +1119,10 @@ function renderStatus(play) {
   const empty = buildingList().filter(({ kind, b }) => !crew(kind, b).length);
   if (empty.length) items.push(`<span class="neg">👷 No workers at ${empty.map(e => e.name).join(', ')}, so ${empty.length > 1 ? 'they produce' : 'it produces'} nothing.</span>`);
   const due = upkeepTotal() + wagesTotal() + state.debts.filter(d => d.due === state.round).reduce((s, d) => s + d.amount, 0);
-  if (state.gold < due && state.workers.some(w => !w.you))
+  if (state.gold < due && state.workers.some(w => w.wage))
     items.push(`<span class="neg">⚠️ This round's bills come to <b>${fmt(due)}</b> but you have <b>${fmt(state.gold)}</b> gold. Unsold goods will be sold to cover them, and any worker who still can't be paid quits.</span>`);
   const idle = state.workers.filter(w => !w.at);
-  if (idle.length) items.push(`<span class="muted">Idle: ${idle.map(w => escapeHtml(w.name)).join(', ')}${idle.some(w => !w.you) ? ' (still paid)' : ''}.</span>`);
+  if (idle.length) items.push(`<span class="muted">Idle: ${idle.map(w => escapeHtml(w.name)).join(', ')}${idle.some(w => w.wage) ? ' (still paid)' : ''}.</span>`);
   const guildNames = state.guilds.map(k => CFG.buildings[k].name).join(' and ');
   if (specialist()) items.push(`🏅 Specialist: the ${guildNames} guild is your only guild, so its buildings produce <b>+${pct(CFG.specialistBonus - 1)}</b>. Joining a second guild ends this.`);
   else if (state.guilds.length) items.push(`Guilds: <b>${guildNames}</b> <span class="muted">(no licences left)</span>`);
