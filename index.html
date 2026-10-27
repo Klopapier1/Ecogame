@@ -204,7 +204,7 @@
         <li><b>Market:</b> each unit you sell lowers that good's price, and the price recovers 35% of the way back each round. Prices also drift at random, with occasional rushes and crashes.</li>
         <li><b>Auto-sell:</b> set a minimum price for a good. After the market moves each round, and as soon as you set the order, units are sold one at a time while the price is at or above your limit.</li>
         <li><b>Events:</b> some rounds bring an event that you must decide on before ending the round.</li>
-        <li><b>Upkeep:</b> each mine costs 15–30 a round depending on its site type, a glassworks 15, a jeweller 20, a mint 25 and a goldsmith 30. Each <i>kind</i> of building you own after the first adds 10% overhead on top, and every mine site type (hillside, silver vein, …) counts as its own kind. More buildings of a kind you already own add no overhead. Wages are paid on top. If you can't pay, your most valuable goods are sold automatically. You can sell a building for 50% of what you paid for it.</li>
+        <li><b>Upkeep:</b> each mine costs 15–30 a round depending on its site type, a glassworks 15, a jeweller 20, a mint 25 and a goldsmith 30. Each <i>kind</i> of building you own after the first adds 10% overhead on top, and every mine site type (hillside, silver vein, …) counts as its own kind. More buildings of a kind you already own add no overhead. Wages are paid on top. If you can't pay, your most valuable goods are sold automatically, and if that still isn't enough, your most recent hires go unpaid and quit, one at a time, until the rest can be paid. You can sell a building for 50% of what you paid for it.</li>
         <li><b>Warehouse:</b> holds 40 goods to start. Anything over the limit at the end of a round is lost, cheapest goods first.</li>
         <li>Order at the end of each round: mines, then jewellers, glassworks, goldsmiths and mints (best-upgraded first within each kind), then workers gain experience, then the warehouse limit, then upkeep, wages and debts, then the market moves, then auto-sell orders run.</li>
       </ul>
@@ -785,7 +785,7 @@ function endRound() {
   if (state.event && !state.event.result) return showEvent();
 
   const r = { round: state.round, gem: 0, silver: 0, cut: 0, sapphire: 0, diamond: 0, broken: 0, idleCut: 0,
-              ring: 0, necklace: 0, idleCraft: 0, lost: {}, upkeep: 0, wages: 0, debt: 0, forced: 0,
+              ring: 0, necklace: 0, idleCraft: 0, lost: {}, upkeep: 0, wages: 0, quit: [], debt: 0, forced: 0,
               processed: {}, strike: !!state.strike, dried: [], autoSold: [], events: [] };
 
   if (state.strike) state.strike--;
@@ -856,6 +856,14 @@ function endRound() {
       const got = saleValue(g.key, 1, true);
       state.gold += got; state.inv[g.key]--; r.forced += got;
     }
+  }
+  // still short: the newest hires go unpaid and quit
+  for (const w of [...state.workers].reverse()) {
+    if (state.gold >= 0) break;
+    if (w.you) continue;
+    state.gold += w.wage; r.wages -= w.wage;
+    state.workers = state.workers.filter(x => x !== w);
+    r.quit.push(w.name);
   }
 
   moveMarket(r);
@@ -1105,6 +1113,9 @@ function renderStatus(play) {
   if (state.perk) items.push(`Perk: <b>${PERKS[state.perk].name}</b> <span class="muted">(${PERKS[state.perk].desc})</span>`);
   const empty = buildingList().filter(({ kind, b }) => !crew(kind, b).length);
   if (empty.length) items.push(`<span class="neg">👷 No workers at ${empty.map(e => e.name).join(', ')}, so ${empty.length > 1 ? 'they produce' : 'it produces'} nothing.</span>`);
+  const due = upkeepTotal() + wagesTotal() + state.debts.filter(d => d.due === state.round).reduce((s, d) => s + d.amount, 0);
+  if (state.gold < due && state.workers.some(w => !w.you))
+    items.push(`<span class="neg">⚠️ This round's bills come to <b>${fmt(due)}</b> but you have <b>${fmt(state.gold)}</b> gold. Unsold goods will be sold to cover them, and any worker who still can't be paid quits.</span>`);
   const idle = state.workers.filter(w => !w.at);
   if (idle.length) items.push(`<span class="muted">Idle: ${idle.map(w => escapeHtml(w.name)).join(', ')}${idle.some(w => !w.you) ? ' (still paid)' : ''}.</span>`);
   const guildNames = state.guilds.map(k => CFG.buildings[k].name).join(' and ');
@@ -1140,6 +1151,7 @@ function renderReport(hide) {
   if (lost.length) items.push(`<span class="neg">Warehouse full! Lost ${lost.map(([k, n]) => `${n} ${k.toLowerCase()}`).join(', ')}.</span>`);
   if (r.upkeep || r.wages) items.push(`You paid <b>${fmt(r.upkeep)}</b> gold in upkeep` + (r.wages ? ` and <b>${fmt(r.wages)}</b> in wages.` : '.'));
   if (r.debt) items.push(`You repaid the investor <b>${fmt(r.debt)}</b> gold.`);
+  if (r.quit && r.quit.length) items.push(`<span class="neg">You couldn't pay ${r.quit.map(escapeHtml).join(', ')}, so they quit.</span>`);
   if (r.forced) items.push(`<span class="neg">You couldn't cover your bills, so goods worth ${fmt(r.forced)} gold were sold automatically.</span>`);
   items.push(...r.events);
   if (r.autoSold.length) items.push(`Auto-sold ${r.autoSold.join(', ')}.`);
