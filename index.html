@@ -558,7 +558,7 @@ function demolish(kind, id) {
   const b = findBuilding(kind, id);
   if (state.phase !== 'play' || !b) return;
   const refund = Math.round(b.paid * CFG.refund);
-  if (!confirm(`Sell this building for ${fmt(refund)} gold?`)) return;
+  if (state.round < CFG.rounds && !confirm(`Sell this building for ${fmt(refund)} gold?`)) return;
   state.gold += refund;
   state[kind] = state[kind].filter(x => x !== b);
   commit();
