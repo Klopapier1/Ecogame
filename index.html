@@ -8,19 +8,19 @@
   :root {
     --bg: #f6f3ec; --card: #ffffff; --ink: #1f1c17; --muted: #6f685c; --line: #e4ddd0;
     --accent: #2f6f5e; --accent-ink: #ffffff; --warn: #b5532f; --gold: #a87b12; --up: #2f7d4a; --hl: #fbf3dc;
-    --gem: #7a5ab8; --silver: #6c7a86; --sapphire: #2c5fb3; --diamond: #2a9bb0; --ring: #b0782a; --necklace: #b03f6e;
+    --gem: #7a5ab8; --silver: #6c7a86; --sapphire: #2c5fb3; --diamond: #2a9bb0; --ring: #b0782a; --necklace: #b03f6e; --coin: #9a7d1f; --glass: #6f8f2a;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #16140f; --card: #211e18; --ink: #efe9dd; --muted: #a49c8d; --line: #353026;
       --accent: #5fb39b; --accent-ink: #0f1a16; --warn: #e08a68; --gold: #e2b54a; --up: #6cc98a; --hl: #2c2618;
-      --gem: #b39ae6; --silver: #a9b6c1; --sapphire: #7aa3ec; --diamond: #6fd0e2; --ring: #e0aa5c; --necklace: #e07aa5;
+      --gem: #b39ae6; --silver: #a9b6c1; --sapphire: #7aa3ec; --diamond: #6fd0e2; --ring: #e0aa5c; --necklace: #e07aa5; --coin: #d9b95a; --glass: #b4d36a;
     }
   }
   :root[data-theme="dark"] {
     --bg: #16140f; --card: #211e18; --ink: #efe9dd; --muted: #a49c8d; --line: #353026;
     --accent: #5fb39b; --accent-ink: #0f1a16; --warn: #e08a68; --gold: #e2b54a; --up: #6cc98a; --hl: #2c2618;
-    --gem: #b39ae6; --silver: #a9b6c1; --sapphire: #7aa3ec; --diamond: #6fd0e2; --ring: #e0aa5c; --necklace: #e07aa5;
+    --gem: #b39ae6; --silver: #a9b6c1; --sapphire: #7aa3ec; --diamond: #6fd0e2; --ring: #e0aa5c; --necklace: #e07aa5; --coin: #d9b95a; --glass: #b4d36a;
   }
   * { box-sizing: border-box; }
   body {
@@ -133,7 +133,7 @@
   </section>
 
   <section id="buildSection">
-    <h2>Build</h2>
+    <h2>Build <span id="guildText"></span></h2>
     <div class="buy sites">
       <b>⛏️ Mine sites <span class="muted" style="font-weight:400;font-size:13px">· new offers every round</span></b>
       <div id="sites"></div>
@@ -148,6 +148,16 @@
         <b>💍 Goldsmith</b>
         <p>Crafts 2 pieces a round: a ring from 1 silver + 1 sapphire, or a necklace from 2 silver + 1 diamond.</p>
         <button class="primary" id="buySmith"></button>
+      </div>
+      <div class="buy">
+        <b>🪙 Mint</b>
+        <p>Strikes 3 silver a round into 3 coins. Coins are worth far less than jewellery, but their price barely drops as you sell.</p>
+        <button class="primary" id="buyMint"></button>
+      </div>
+      <div class="buy">
+        <b>🪟 Glassworks</b>
+        <p>Melts 3 uncut gems a round into 3 panes of stained glass. It never fails, and the price barely drops as you sell.</p>
+        <button class="primary" id="buyGlass"></button>
       </div>
       <div class="buy">
         <b>📦 Warehouse</b>
@@ -175,13 +185,15 @@
         <li><b>Mine sites:</b> each round 3 sites are offered. Hillside mines are average, silver veins produce almost only silver, gem pockets give lots of gems but run dry, rich lodes are strong but also run dry, and deep shafts are expensive but produce a lot. Each mine you already own makes the next one 12% more expensive.</li>
         <li><b>Jeweller:</b> cuts 2 uncut gems a round. Each cut fails 10% of the time and the gem is lost. Otherwise you get a sapphire (80%) or a diamond (20%).</li>
         <li><b>Goldsmith:</b> crafts 2 pieces a round, either a ring (1 silver + 1 sapphire) or a necklace (2 silver + 1 diamond). On <i>auto</i>, it makes whichever is worth more than its materials at current prices, and nothing if neither is.</li>
+        <li><b>Mint:</b> strikes 3 silver a round into 3 coins. <b>Glassworks:</b> melts 3 uncut gems a round into 3 panes of stained glass. Both sit idle while their product is worth no more than its raw material. Coins and glass lose very little price as you sell, so they suit selling in bulk.</li>
+        <li><b>Guilds:</b> jewellers, goldsmiths, mints and glassworks each need a guild licence. You join a guild when you build your first building of that kind. You can only ever join <b>2 guilds</b>, and a licence stays used even if you sell the buildings later. While you are in just <b>one</b> guild, its buildings produce <b>25% more</b>.</li>
         <li>An <b>upgrade</b> costs 300, up to 3 per building, and adds +20% output. On a mine it also adds +10 points to the gem chance. On a jeweller it adds +10 points to the diamond chance and lowers the failure rate by 3 points.</li>
         <li><b>Market:</b> each unit you sell lowers that good's price, and the price recovers 35% of the way back each round. Prices also drift at random, with occasional rushes and crashes.</li>
         <li><b>Auto-sell:</b> set a minimum price for a good. After the market moves each round, and as soon as you set the order, units are sold one at a time while the price is at or above your limit.</li>
         <li><b>Events:</b> some rounds bring an event that you must decide on before ending the round.</li>
-        <li><b>Upkeep:</b> each mine costs 15–30 a round depending on its site type, a jeweller 20 and a goldsmith 30. Each building after the first adds 5% overhead on top. If you can't pay, your most valuable goods are sold automatically. You can sell a building for 50% of what you paid for it.</li>
+        <li><b>Upkeep:</b> each mine costs 15–30 a round depending on its site type, a glassworks 15, a jeweller 20, a mint 25 and a goldsmith 30. Each <i>kind</i> of building you own after the first adds 10% overhead on top, and every mine site type (hillside, silver vein, …) counts as its own kind. More buildings of a kind you already own add no overhead. If you can't pay, your most valuable goods are sold automatically. You can sell a building for 50% of what you paid for it.</li>
         <li><b>Warehouse:</b> holds 40 goods to start. Anything over the limit at the end of a round is lost, cheapest goods first.</li>
-        <li>Order at the end of each round: mines, then jewellers, then goldsmiths (best-upgraded first), then the warehouse limit, then upkeep and debts, then the market moves, then auto-sell orders run.</li>
+        <li>Order at the end of each round: mines, then jewellers, glassworks, goldsmiths and mints (best-upgraded first within each kind), then the warehouse limit, then upkeep and debts, then the market moves, then auto-sell orders run.</li>
       </ul>
     </details>
     <div style="margin-top:10px"><button id="newGame">Start new game</button></div>
@@ -199,7 +211,9 @@ const CFG = {
   upgradeCost: 300,
   maxLevel: 3,
   refund: 0.5,
-  overhead: 0.05,
+  overhead: 0.10,          // per distinct kind of building after the first (each mine site type is a kind)
+  maxGuilds: 2,
+  specialistBonus: 1.25,   // output of a guild's buildings while it is your only guild
   recovery: 0.35,
   storageBase: 40,
   storageStep: 40,
@@ -207,8 +221,10 @@ const CFG = {
   eventChance: 0.4,
   buildings: {
     mine:     { label: '⛏️ Mine' },
-    jeweller: { base: 400, upkeep: 20, label: '🔨 Jeweller' },
-    smith:    { base: 550, upkeep: 30, label: '💍 Goldsmith' },
+    jeweller: { base: 400, upkeep: 20, label: '🔨 Jeweller',   name: 'Jeweller' },
+    smith:    { base: 550, upkeep: 30, label: '💍 Goldsmith',  name: 'Goldsmith' },
+    mint:     { base: 450, upkeep: 25, label: '🪙 Mint',       name: 'Mint' },
+    glass:    { base: 300, upkeep: 15, label: '🪟 Glassworks', name: 'Glassworks' },
   },
 };
 // drop = price fall per unit sold; order = most valuable first (also the forced-sale order)
@@ -217,11 +233,19 @@ const GOODS = [
   { key: 'ring',     label: 'Rings',      base: 220, drop: 0.02,  color: 'var(--ring)' },
   { key: 'diamond',  label: 'Diamonds',   base: 150, drop: 0.02,  color: 'var(--diamond)' },
   { key: 'sapphire', label: 'Sapphires',  base: 80,  drop: 0.015, color: 'var(--sapphire)' },
+  { key: 'coin',     label: 'Coins',      base: 80,  drop: 0.004, color: 'var(--coin)' },
+  { key: 'glass',    label: 'Stained glass', base: 75, drop: 0.005, color: 'var(--glass)' },
   { key: 'silver',   label: 'Silver',     base: 40,  drop: 0.01,  color: 'var(--silver)' },
   { key: 'gem',      label: 'Uncut gems', base: 30,  drop: 0.01,  color: 'var(--gem)' },
 ];
 const GOOD = Object.fromEntries(GOODS.map(g => [g.key, g]));
 const KINDS = Object.keys(CFG.buildings);
+const GUILDS = KINDS.filter(k => k !== 'mine');
+// single-input buildings: one unit of input becomes one unit of output
+const PROCESSORS = {
+  glass: { input: 'gem',    output: 'glass', capacity: 3 },
+  mint:  { input: 'silver', output: 'coin',  capacity: 3 },
+};
 
 // reserve: [min, max] units before the mine runs dry; absent = never runs dry
 const SITES = {
@@ -284,9 +308,12 @@ function mineStats(m) {
   const s = SITES[m.type];
   return { gemChance: Math.min(0.9, s.gemChance + 0.1 * m.level), mult: s.mult * (1 + 0.2 * m.level) * (m.boost > 0 ? 2 : 1) };
 }
-const jewellerStats = lvl => ({ capacity: 2 * (1 + 0.2 * lvl), fail: 0.10 - 0.03 * lvl,
+const specialist = () => state.guilds.length === 1 ? state.guilds[0] : null;
+const guildBonus = kind => specialist() === kind ? CFG.specialistBonus : 1;
+const jewellerStats = lvl => ({ capacity: 2 * (1 + 0.2 * lvl) * guildBonus('jeweller'), fail: 0.10 - 0.03 * lvl,
                                 diamondChance: 0.2 + 0.1 * lvl + (hasPerk('cutter') ? 0.1 : 0) });
-const smithStats = lvl => ({ capacity: 2 * (1 + 0.2 * lvl) });
+const smithStats = lvl => ({ capacity: 2 * (1 + 0.2 * lvl) * guildBonus('smith') });
+const processorStats = (kind, lvl) => ({ capacity: PROCESSORS[kind].capacity * (1 + 0.2 * lvl) * guildBonus(kind) });
 const priceFor = (base, owned) => Math.round(base * Math.pow(CFG.growth, owned) / 10) * 10;
 const buildPrice = kind => priceFor(CFG.buildings[kind].base, state[kind].length);
 const sitePrice = offer => priceFor(CFG.mineBase * SITES[offer.type].price * (hasPerk('charter') ? 0.7 : 1), state.mine.length);
@@ -294,7 +321,10 @@ const storageExpandCost = () => CFG.storageCost * (state.storageLevel + 1);
 const capacity = () => CFG.storageBase + CFG.storageStep * state.storageLevel + (hasPerk('warehouse') ? 60 : 0);
 const stored = () => GOODS.reduce((s, g) => s + state.inv[g.key], 0);
 const buildingCount = () => KINDS.reduce((s, k) => s + state[k].length, 0);
-const overheadMult = () => 1 + CFG.overhead * Math.max(0, buildingCount() - 1);
+const kindCount = () => new Set([...state.mine.map(m => m.type), ...GUILDS.filter(k => state[k].length)]).size;
+const overheadMult = () => 1 + CFG.overhead * Math.max(0, kindCount() - 1);
+// a building of this kind can be bought: already in its guild, or a licence is still free
+const canJoin = kind => kind === 'mine' || state.guilds.includes(kind) || state.guilds.length < CFG.maxGuilds;
 const buildingUpkeep = (kind, b) => kind === 'mine' ? SITES[b.type].upkeep : CFG.buildings[kind].upkeep;
 function upkeepTotal() {
   const base = KINDS.reduce((s, k) => s + state[k].reduce((t, b) => t + buildingUpkeep(k, b), 0), 0);
@@ -450,9 +480,9 @@ const EVENTS = {
     ],
   },
   collector: {
-    title: '👑 Collector', weight: 2, ok: () => ['necklace', 'ring', 'diamond'].some(k => state.inv[k] >= 2),
+    title: '👑 Collector', weight: 2, ok: () => ['necklace', 'ring', 'diamond', 'coin'].some(k => state.inv[k] >= 2),
     make() {
-      const key = pick(['necklace', 'ring', 'diamond'].filter(k => state.inv[k] >= 2));
+      const key = pick(['necklace', 'ring', 'diamond', 'coin'].filter(k => state.inv[k] >= 2));
       return { key, n: Math.min(state.inv[key], randInt(2, 6)), unit: Math.round(GOOD[key].base * (1.1 + rand() * 0.4)) };
     },
     text: e => `A noble collector wants <b>${e.n} ${lower(e.key)}</b> at <b>${e.unit}</b> each. That's a private sale, so market prices aren't affected (current price ${price(e.key)}).`,
@@ -487,9 +517,9 @@ function newGame() {
   const market = {};
   for (const g of GOODS) market[g.key] = { sat: 1, trend: 1, hist: [g.base] };
   return {
-    v: 3, round: 1, gold: CFG.startGold, phase: 'perk', nextId: 1, storageLevel: 0,
+    v: 4, round: 1, gold: CFG.startGold, phase: 'perk', nextId: 1, storageLevel: 0,
     inv: Object.fromEntries(GOODS.map(g => [g.key, 0])),
-    mine: [], jeweller: [], smith: [], sites: [], market, orders: {},
+    mine: [], jeweller: [], smith: [], mint: [], glass: [], guilds: [], sites: [], market, orders: {},
     perk: null, perkOffers: shuffled(Object.keys(PERKS)).slice(0, 3),
     event: null, strike: 0, rushes: [], debts: [],
     report: null, scoreT: null,
@@ -497,12 +527,24 @@ function newGame() {
 }
 
 let state = load(SAVE_KEY, null);
-if (!state || state.v !== 3) state = newGame();
+// v3 -> v4: mints, glassworks and guild licences; a v3 game held at most jeweller + goldsmith
+if (state && state.v === 3) {
+  Object.assign(state, { v: 4, mint: [], glass: [], report: null,
+                         guilds: ['jeweller', 'smith'].filter(k => state[k].length) });
+  for (const g of GOODS) if (!state.market[g.key]) {
+    state.inv[g.key] = 0;
+    state.market[g.key] = { sat: 1, trend: 1, hist: [g.base] };
+  }
+}
+if (!state || state.v !== 4) state = newGame();
 
 function choosePerk(id) {
   if (state.phase !== 'perk' || !state.perkOffers.includes(id)) return;
   state.perk = id;
-  if (id === 'workshop') state.smith.push({ id: state.nextId++, level: 0, paid: 0, mode: 'auto' });
+  if (id === 'workshop') {
+    state.smith.push({ id: state.nextId++, level: 0, paid: 0, mode: 'auto' });
+    state.guilds.push('smith');
+  }
   if (id === 'loan') state.gold += 600;
   state.phase = 'play';
   rollSites();
@@ -516,7 +558,14 @@ function netWorth() {
 // ---- actions ----
 function buy(kind) {
   const cost = buildPrice(kind);
-  if (state.phase !== 'play' || state.gold < cost) return;
+  if (state.phase !== 'play' || state.gold < cost || !canJoin(kind)) return;
+  if (!state.guilds.includes(kind)) {
+    const n = state.guilds.length + 1, name = CFG.buildings[kind].name;
+    const note = n === 1 ? `While it is your only guild, its buildings produce ${pct(CFG.specialistBonus - 1)} more.`
+      : n === CFG.maxGuilds ? `That is your last licence, and you lose the ${pct(CFG.specialistBonus - 1)} specialist bonus.` : '';
+    if (!confirm(`Join the ${name} guild? This uses guild licence ${n} of ${CFG.maxGuilds} for the rest of the game. ${note}`)) return;
+    state.guilds.push(kind);
+  }
   state.gold -= cost;
   const b = { id: state.nextId++, level: 0, paid: cost };
   if (kind === 'smith') b.mode = 'auto';
@@ -603,6 +652,21 @@ function pickRecipe(mode) {
   return options[0] || null;
 }
 
+const byLevel = list => [...list].sort((a, b) => b.level - a.level);
+
+function runProcessor(kind, r) {
+  const { input, output } = PROCESSORS[kind];
+  const out = r.processed[kind] = { made: 0, idle: 0 };
+  for (const b of byLevel(state[kind])) {
+    const want = randRound(processorStats(kind, b.level).capacity);
+    const n = price(output) > price(input) ? Math.min(want, state.inv[input]) : 0;
+    out.idle += want - n;
+    out.made += n;
+    state.inv[input] -= n;
+    state.inv[output] += n;
+  }
+}
+
 function endRound() {
   if (state.phase === 'final') return finishGame();
   if (state.phase !== 'play') return;
@@ -610,8 +674,7 @@ function endRound() {
 
   const r = { round: state.round, gem: 0, silver: 0, cut: 0, sapphire: 0, diamond: 0, broken: 0, idleCut: 0,
               ring: 0, necklace: 0, idleCraft: 0, lost: {}, upkeep: 0, debt: 0, forced: 0,
-              strike: !!state.strike, dried: [], autoSold: [], events: [] };
-  const byLevel = list => [...list].sort((a, b) => b.level - a.level);
+              processed: {}, strike: !!state.strike, dried: [], autoSold: [], events: [] };
 
   if (state.strike) state.strike--;
   else for (const m of state.mine) {
@@ -644,6 +707,8 @@ function endRound() {
     }
   }
 
+  runProcessor('glass', r);
+
   for (const g of byLevel(state.smith)) {
     const want = randRound(smithStats(g.level).capacity);
     for (let i = 0; i < want; i++) {
@@ -654,6 +719,8 @@ function endRound() {
       r[item]++;
     }
   }
+
+  runProcessor('mint', r);
 
   // warehouse limit: drop the cheapest goods first
   let over = stored() - capacity();
@@ -787,18 +854,20 @@ function render() {
       <button class="primary" data-site="${i}" ${state.gold < cost ? 'disabled' : ''}>Buy · ${fmt(cost)}</button>
     </div>`;
   }).join('') || `<div class="empty">You've bought every site on offer. New ones arrive next round.</div>`;
-  for (const [kind, id] of [['jeweller', 'buyJeweller'], ['smith', 'buySmith']]) {
+  for (const [kind, id] of [['jeweller', 'buyJeweller'], ['smith', 'buySmith'], ['mint', 'buyMint'], ['glass', 'buyGlass']]) {
     const p = buildPrice(kind);
-    $(id).textContent = `Buy · ${fmt(p)} (upkeep ${CFG.buildings[kind].upkeep})`;
-    $(id).disabled = state.gold < p;
+    $(id).textContent = !canJoin(kind) ? `No guild licence left`
+      : `${state.guilds.includes(kind) ? 'Buy' : 'Join guild & buy'} · ${fmt(p)} (upkeep ${CFG.buildings[kind].upkeep})`;
+    $(id).disabled = state.gold < p || !canJoin(kind);
   }
+  $('guildText').textContent = `guild licences ${state.guilds.length} / ${CFG.maxGuilds}`;
   $('storageInfo').textContent = `Adds ${CFG.storageStep} storage, from ${cap} to ${cap + CFG.storageStep}. The cost rises with each expansion.`;
   $('buyStorage').textContent = `Expand · ${fmt(storageExpandCost())}`;
   $('buyStorage').disabled = state.gold < storageExpandCost();
 
   // buildings
   $('buildingsSection').hidden = over || perk;
-  $('overheadText').textContent = buildingCount() > 1 ? `overhead +${Math.round((overheadMult() - 1) * 100)}%` : '';
+  $('overheadText').textContent = buildingCount() > 1 ? `${kindCount()} kinds · overhead +${Math.round((overheadMult() - 1) * 100)}%` : '';
   const rows = [];
   state.mine.forEach(m => {
     rows.push(buildingRow('mine', m, `⛏️ ${SITES[m.type].name}` + (m.boost > 0 ? `<span class="tag">×2 for ${m.boost}</span>` : ''),
@@ -812,6 +881,11 @@ function render() {
   state.smith.forEach((g, i) => {
     rows.push(buildingRow('smith', g, `💍 Goldsmith ${i + 1}`, `crafts ${smithStats(g.level).capacity.toFixed(1)}/round`,
       `<button ${play ? '' : 'disabled'} data-mode="${g.id}" title="Change what this goldsmith makes">Makes: ${g.mode}</button>`));
+  });
+  for (const kind of ['mint', 'glass']) state[kind].forEach((b, i) => {
+    const p = PROCESSORS[kind];
+    rows.push(buildingRow(kind, b, `${CFG.buildings[kind].label} ${i + 1}`,
+      `turns ${processorStats(kind, b.level).capacity.toFixed(1)} ${lower(p.input)}/round into ${lower(p.output)}`));
   });
   $('buildings').innerHTML = rows.join('') || '<div class="empty">Nothing yet. Start by buying a mine site.</div>';
 
@@ -873,6 +947,10 @@ function renderEvent() {
 function renderStatus(play) {
   const items = [];
   if (state.perk) items.push(`Perk: <b>${PERKS[state.perk].name}</b> <span class="muted">(${PERKS[state.perk].desc})</span>`);
+  const guildNames = state.guilds.map(k => CFG.buildings[k].name).join(' and ');
+  if (specialist()) items.push(`🏅 Specialist: the ${guildNames} guild is your only guild, so its buildings produce <b>+${pct(CFG.specialistBonus - 1)}</b>. Joining a second guild ends this.`);
+  else if (state.guilds.length) items.push(`Guilds: <b>${guildNames}</b> <span class="muted">(no licences left)</span>`);
+  else items.push(`<span class="muted">Guilds: none yet. You can join ${CFG.maxGuilds} for the whole game.</span>`);
   if (state.strike) items.push(`<span class="neg">✊ Strike: your mines are idle for ${state.strike} more round${state.strike > 1 ? 's' : ''}.</span>`);
   for (const d of state.debts) items.push(`🎩 You owe <b>${fmt(d.amount)}</b>, due at the end of round ${d.due}.`);
   for (const s of state.rushes) if (s.known) items.push(`🗣️ ${GOOD[s.key].label} prices will soar in round ${s.due}.`);
@@ -893,6 +971,11 @@ function renderReport(hide) {
     (r.broken ? `, and <b>${r.broken}</b> broke.` : '.') + (r.idleCut ? ` <span class="muted">${r.idleCut} cuts were skipped for lack of gems.</span>` : ''));
   if (r.ring || r.necklace || r.idleCraft) items.push(`Your goldsmiths crafted <b>${r.ring}</b> rings and <b>${r.necklace}</b> necklaces.` +
     (r.idleCraft ? ` <span class="muted">${r.idleCraft} pieces were not made (missing materials, or auto judged it unprofitable).</span>` : ''));
+  const proc = r.processed || {};
+  if (proc.glass && (proc.glass.made || proc.glass.idle)) items.push(`Your glassworks melted <b>${proc.glass.made}</b> gems into stained glass.` +
+    (proc.glass.idle ? ` <span class="muted">${proc.glass.idle} were not made (no gems, or glass was worth no more than gems).</span>` : ''));
+  if (proc.mint && (proc.mint.made || proc.mint.idle)) items.push(`Your mints struck <b>${proc.mint.made}</b> coins.` +
+    (proc.mint.idle ? ` <span class="muted">${proc.mint.idle} were not struck (no silver, or coins were worth no more than silver).</span>` : ''));
   const lost = Object.entries(r.lost);
   if (lost.length) items.push(`<span class="neg">Warehouse full! Lost ${lost.map(([k, n]) => `${n} ${k.toLowerCase()}`).join(', ')}.</span>`);
   if (r.upkeep) items.push(`You paid <b>${fmt(r.upkeep)}</b> gold in upkeep.`);
@@ -925,6 +1008,8 @@ function escapeHtml(s) {
 // ---- wiring ----
 $('buyJeweller').onclick = () => buy('jeweller');
 $('buySmith').onclick = () => buy('smith');
+$('buyMint').onclick = () => buy('mint');
+$('buyGlass').onclick = () => buy('glass');
 $('buyStorage').onclick = expandStorage;
 $('endRound').onclick = endRound;
 $('newGame').onclick = restart;
