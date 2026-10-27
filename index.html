@@ -79,6 +79,7 @@
   .order { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--muted); }
   .order input { width: 64px; font: inherit; padding: 6px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); min-height: 38px; }
   .order input.on { border-color: var(--accent); }
+  select { font: inherit; padding: 6px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); min-height: 38px; max-width: 100%; }
   .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px solid var(--line); z-index: 2; }
   .bar div { max-width: 760px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 10px; align-items: center; }
   .bar button.primary { flex: 1; min-height: 46px; font-size: 16px; }
@@ -104,7 +105,7 @@
   <h1>💎 Gem Tycoon</h1>
   <span class="stat"><small>Round</small> <b id="round"></b></span>
   <span class="stat"><small>Gold</small> <b class="gold" id="gold"></b></span>
-  <span class="stat"><small>Upkeep</small> <b id="upkeep"></b></span>
+  <span class="stat" title="Building upkeep plus wages, paid every round"><small>Costs</small> <b id="upkeep"></b></span>
   <span class="stat"><small>Net worth</small> <b id="worth"></b></span>
 </div></header>
 
@@ -135,28 +136,28 @@
   <section id="buildSection">
     <h2>Build <span id="guildText"></span></h2>
     <div class="buy sites">
-      <b>⛏️ Mine sites <span class="muted" style="font-weight:400;font-size:13px">· new offers every round</span></b>
+      <b>⛏️ Mine sites <span class="muted" style="font-weight:400;font-size:13px">· new offers every round · output shown for one average worker</span></b>
       <div id="sites"></div>
     </div>
     <div class="grid3">
       <div class="buy">
         <b>🔨 Jeweller</b>
-        <p>Cuts 2 uncut gems a round into sapphires (80%) or diamonds (20%). Each cut fails 10% of the time.</p>
+        <p>An average worker cuts 2 uncut gems a round into sapphires (80%) or diamonds (20%). Each cut fails 10% of the time.</p>
         <button class="primary" id="buyJeweller"></button>
       </div>
       <div class="buy">
         <b>💍 Goldsmith</b>
-        <p>Crafts 2 pieces a round: a ring from 1 silver + 1 sapphire, or a necklace from 2 silver + 1 diamond.</p>
+        <p>An average worker crafts 2 pieces a round: a ring from 1 silver + 1 sapphire, or a necklace from 2 silver + 1 diamond.</p>
         <button class="primary" id="buySmith"></button>
       </div>
       <div class="buy">
         <b>🪙 Mint</b>
-        <p>Strikes 3 silver a round into 3 coins. Coins are worth far less than jewellery, but their price barely drops as you sell.</p>
+        <p>An average worker strikes 3 silver a round into 3 coins. Coins are worth far less than jewellery, but their price barely drops as you sell.</p>
         <button class="primary" id="buyMint"></button>
       </div>
       <div class="buy">
         <b>🪟 Glassworks</b>
-        <p>Melts 3 uncut gems a round into 3 panes of stained glass. It never fails, and the price barely drops as you sell.</p>
+        <p>An average worker melts 3 uncut gems a round into 3 panes of stained glass. It never fails, and the price barely drops as you sell.</p>
         <button class="primary" id="buyGlass"></button>
       </div>
       <div class="buy">
@@ -172,6 +173,15 @@
     <div id="buildings"></div>
   </section>
 
+  <section id="workersSection">
+    <h2>Workers <span id="wageText"></span></h2>
+    <div id="workers"></div>
+    <div class="buy" style="margin-top:10px">
+      <b>🧑‍🔧 Applicants <span class="muted" style="font-weight:400;font-size:13px">· new ones every round</span></b>
+      <div id="applicants"></div>
+    </div>
+  </section>
+
   <section>
     <h2>Leaderboard</h2>
     <div id="leaderboard"></div>
@@ -181,8 +191,11 @@
     <details>
       <summary>Rules</summary>
       <ul class="report">
-        <li>You have <b>25 rounds</b> and start with <b>1000 gold</b>, plus one perk you pick from three. Whoever has the most gold at the end wins. Goods you haven't sold count for nothing.</li>
+        <li>You have <b>25 rounds</b> and start with <b>500 gold</b>, enough for one building, plus one perk you pick from three. Whoever has the most gold at the end wins. Goods you haven't sold count for nothing.</li>
         <li><b>Mine sites:</b> each round 3 sites are offered. Hillside mines are average, silver veins produce almost only silver, gem pockets give lots of gems but run dry, rich lodes are strong but also run dry, and deep shafts are expensive but produce a lot. Each mine you already own makes the next one 12% more expensive.</li>
+        <li><b>Workers:</b> a building produces nothing without workers. Each building takes up to 2, and its output grows with their combined skill: a worker with 100% skill produces the amounts below, one with 130% produces 30% more. You are a worker too, with 100% skill and no wage. New applicants arrive every round. A worker's wage is roughly 40 × skill, give or take 30%, so some are bargains. Hired workers are paid every round, even while idle, and you can let them go at any time.</li>
+        <li><b>Experience:</b> each round a worker spends on a task (mining, cutting, crafting, minting, glassmaking) adds +5% to their skill at that task, up to +50% after 10 rounds. Their wage stays the same. Experience is kept per task, so moving a worker elsewhere starts them fresh there, and moving them back picks up where they left off.</li>
+        <li><b>Buying raw goods:</b> you can buy uncut gems and silver on the market for 25% above their selling price. Each unit you buy raises the price.</li>
         <li><b>Jeweller:</b> cuts 2 uncut gems a round. Each cut fails 10% of the time and the gem is lost. Otherwise you get a sapphire (80%) or a diamond (20%).</li>
         <li><b>Goldsmith:</b> crafts 2 pieces a round, either a ring (1 silver + 1 sapphire) or a necklace (2 silver + 1 diamond). On <i>auto</i>, it makes whichever is worth more than its materials at current prices, and nothing if neither is.</li>
         <li><b>Mint:</b> strikes 3 silver a round into 3 coins. <b>Glassworks:</b> melts 3 uncut gems a round into 3 panes of stained glass. Both sit idle while their product is worth no more than its raw material. Coins and glass lose very little price as you sell, so they suit selling in bulk.</li>
@@ -191,9 +204,9 @@
         <li><b>Market:</b> each unit you sell lowers that good's price, and the price recovers 35% of the way back each round. Prices also drift at random, with occasional rushes and crashes.</li>
         <li><b>Auto-sell:</b> set a minimum price for a good. After the market moves each round, and as soon as you set the order, units are sold one at a time while the price is at or above your limit.</li>
         <li><b>Events:</b> some rounds bring an event that you must decide on before ending the round.</li>
-        <li><b>Upkeep:</b> each mine costs 15–30 a round depending on its site type, a glassworks 15, a jeweller 20, a mint 25 and a goldsmith 30. Each <i>kind</i> of building you own after the first adds 10% overhead on top, and every mine site type (hillside, silver vein, …) counts as its own kind. More buildings of a kind you already own add no overhead. If you can't pay, your most valuable goods are sold automatically. You can sell a building for 50% of what you paid for it.</li>
+        <li><b>Upkeep:</b> each mine costs 15–30 a round depending on its site type, a glassworks 15, a jeweller 20, a mint 25 and a goldsmith 30. Each <i>kind</i> of building you own after the first adds 10% overhead on top, and every mine site type (hillside, silver vein, …) counts as its own kind. More buildings of a kind you already own add no overhead. Wages are paid on top. If you can't pay, your most valuable goods are sold automatically. You can sell a building for 50% of what you paid for it.</li>
         <li><b>Warehouse:</b> holds 40 goods to start. Anything over the limit at the end of a round is lost, cheapest goods first.</li>
-        <li>Order at the end of each round: mines, then jewellers, glassworks, goldsmiths and mints (best-upgraded first within each kind), then the warehouse limit, then upkeep and debts, then the market moves, then auto-sell orders run.</li>
+        <li>Order at the end of each round: mines, then jewellers, glassworks, goldsmiths and mints (best-upgraded first within each kind), then workers gain experience, then the warehouse limit, then upkeep, wages and debts, then the market moves, then auto-sell orders run.</li>
       </ul>
     </details>
     <div style="margin-top:10px"><button id="newGame">Start new game</button></div>
@@ -205,7 +218,7 @@
 <script>
 const CFG = {
   rounds: 25,
-  startGold: 1000,
+  startGold: 500,          // enough for exactly one building
   growth: 1.12,
   mineBase: 300,
   upgradeCost: 300,
@@ -219,6 +232,13 @@ const CFG = {
   storageStep: 40,
   storageCost: 200,
   eventChance: 0.4,
+  slots: 2,                // workers per building
+  wageBase: 40,            // wage of a 100% worker, before the +-wageSpread roll
+  wageSpread: 0.3,
+  applicants: 3,
+  expGain: 0.05,           // skill bonus per round spent on a task
+  expCap: 10,              // rounds after which experience stops adding
+  buyMarkup: 1.25,         // raw goods cost this much more than they sell for
   buildings: {
     mine:     { label: '⛏️ Mine' },
     jeweller: { base: 400, upkeep: 20, label: '🔨 Jeweller',   name: 'Jeweller' },
@@ -242,6 +262,10 @@ const GOOD = Object.fromEntries(GOODS.map(g => [g.key, g]));
 const KINDS = Object.keys(CFG.buildings);
 const GUILDS = KINDS.filter(k => k !== 'mine');
 // single-input buildings: one unit of input becomes one unit of output
+const RAW = ['gem', 'silver'];
+const TASKS = { mine: 'mining', jeweller: 'cutting', smith: 'crafting', mint: 'minting', glass: 'glassmaking' };
+const NAMES = ['Ada', 'Bram', 'Cora', 'Dirk', 'Edda', 'Finn', 'Greta', 'Hugo', 'Ilse', 'Jonas', 'Kaja', 'Lars', 'Mira', 'Nils',
+               'Oda', 'Pim', 'Rosa', 'Sven', 'Tilda', 'Udo', 'Vera', 'Wim', 'Yara', 'Zeno', 'Alma', 'Bo', 'Elin', 'Henk', 'Lotte', 'Rune'];
 const PROCESSORS = {
   glass: { input: 'gem',    output: 'glass', capacity: 3 },
   mint:  { input: 'silver', output: 'coin',  capacity: 3 },
@@ -269,7 +293,8 @@ const PERKS = {
 };
 
 const SAVE_KEY = 'gemtycoon.game.v3';
-const BOARD_KEY = 'gemtycoon.leaderboard.v2';
+// v3 board: scores from before workers (1000 starting gold) aren't comparable
+const BOARD_KEY = 'gemtycoon.leaderboard.v3';
 const NAME_KEY = 'gemtycoon.name';
 
 let rand = Math.random;
@@ -331,6 +356,19 @@ function upkeepTotal() {
   return Math.round(base * overheadMult() * (hasPerk('loan') ? 1.25 : 1) * (hasPerk('thrifty') ? 0.7 : 1));
 }
 
+const effSkill = (w, kind) => w.skill * (1 + CFG.expGain * Math.min(w.exp[kind] || 0, CFG.expCap));
+const crew = (kind, b) => state.workers.filter(w => w.at && w.at.kind === kind && w.at.id === b.id);
+const workforce = (kind, b) => crew(kind, b).reduce((s, w) => s + effSkill(w, kind), 0);
+const wagesTotal = () => state.workers.reduce((s, w) => s + w.wage, 0);
+const you = () => state.workers.find(w => w.you);
+
+function makeApplicant() {
+  const skill = Math.round(clamp(1 + gauss() * 0.25, 0.5, 1.6) * 20) / 20;
+  const wage = Math.max(5, Math.round(CFG.wageBase * skill * (1 + (rand() * 2 - 1) * CFG.wageSpread)));
+  return { id: state.nextId++, name: pick(NAMES), skill, wage, at: null, exp: {} };
+}
+function rollApplicants() { state.applicants = Array.from({ length: CFG.applicants }, makeApplicant); }
+
 function rollSites() {
   const n = hasPerk('prospector') ? 4 : 3;
   const entries = Object.entries(SITES).map(([k, s]) => [k, s.weight]);
@@ -352,6 +390,18 @@ function saleValue(key, n, commit = false) {
   for (let i = 0; i < n; i++) {
     total += Math.max(1, Math.round(baseOf(key) * sat * m.trend));
     sat = Math.max(0.2, sat * (1 - dropOf(key)));
+  }
+  if (commit) m.sat = sat;
+  return total;
+}
+
+// Gold to buy n units, walking the price up unit by unit; mutates only when commit.
+function buyCost(key, n, commit = false) {
+  const m = state.market[key];
+  let sat = m.sat, total = 0;
+  for (let i = 0; i < n; i++) {
+    total += Math.max(1, Math.round(baseOf(key) * sat * m.trend * CFG.buyMarkup));
+    sat = Math.min(3, sat / (1 - dropOf(key)));
   }
   if (commit) m.sat = sat;
   return total;
@@ -517,9 +567,10 @@ function newGame() {
   const market = {};
   for (const g of GOODS) market[g.key] = { sat: 1, trend: 1, hist: [g.base] };
   return {
-    v: 4, round: 1, gold: CFG.startGold, phase: 'perk', nextId: 1, storageLevel: 0,
+    v: 5, round: 1, gold: CFG.startGold, phase: 'perk', nextId: 1, storageLevel: 0,
     inv: Object.fromEntries(GOODS.map(g => [g.key, 0])),
     mine: [], jeweller: [], smith: [], mint: [], glass: [], guilds: [], sites: [], market, orders: {},
+    workers: [{ id: 0, name: 'You', you: true, skill: 1, wage: 0, at: null, exp: {} }], applicants: [],
     perk: null, perkOffers: shuffled(Object.keys(PERKS)).slice(0, 3),
     event: null, strike: 0, rushes: [], debts: [],
     report: null, scoreT: null,
@@ -536,7 +587,20 @@ if (state && state.v === 3) {
     state.market[g.key] = { sat: 1, trend: 1, hist: [g.base] };
   }
 }
-if (!state || state.v !== 4) state = newGame();
+// v4 -> v5: workers; you staff the first building and a 100% worker at the base wage staffs each other one
+if (state && state.v === 4) {
+  state.v = 5;
+  state.report = null;
+  state.applicants = [];
+  state.workers = [{ id: 0, name: 'You', you: true, skill: 1, wage: 0, at: null, exp: {} }];
+  for (const kind of KINDS) for (const b of state[kind]) {
+    const w = state.workers[0].at ? { id: state.nextId++, name: pick(NAMES), skill: 1, wage: CFG.wageBase, exp: {} } : state.workers[0];
+    w.at = { kind, id: b.id };
+    if (w !== state.workers[0]) state.workers.push(w);
+  }
+  if (state.phase === 'play') rollApplicants();
+}
+if (!state || state.v !== 5) state = newGame();
 
 function choosePerk(id) {
   if (state.phase !== 'perk' || !state.perkOffers.includes(id)) return;
@@ -548,6 +612,7 @@ function choosePerk(id) {
   if (id === 'loan') state.gold += 600;
   state.phase = 'play';
   rollSites();
+  rollApplicants();
   commit();
 }
 
@@ -570,6 +635,7 @@ function buy(kind) {
   const b = { id: state.nextId++, level: 0, paid: cost };
   if (kind === 'smith') b.mode = 'auto';
   state[kind].push(b);
+  staffYourself(kind, b);
   commit();
 }
 
@@ -579,8 +645,53 @@ function buySite(i) {
   const cost = sitePrice(offer);
   if (state.gold < cost) return;
   state.gold -= cost;
-  state.mine.push({ id: state.nextId++, level: 0, paid: cost, type: offer.type, reserve: offer.reserve, boost: 0 });
+  const m = { id: state.nextId++, level: 0, paid: cost, type: offer.type, reserve: offer.reserve, boost: 0 };
+  state.mine.push(m);
   state.sites.splice(i, 1);
+  staffYourself('mine', m);
+  commit();
+}
+
+// a new building gets you as its worker if you have nothing else to do
+function staffYourself(kind, b) {
+  const w = you();
+  if (w && !w.at) w.at = { kind, id: b.id };
+}
+
+function hire(id) {
+  const i = state.applicants.findIndex(a => a.id === id);
+  if (state.phase !== 'play' || i < 0) return;
+  state.workers.push(state.applicants.splice(i, 1)[0]);
+  commit();
+}
+
+function fire(id) {
+  const w = state.workers.find(w => w.id === id);
+  if (state.phase !== 'play' || !w || w.you) return;
+  state.workers = state.workers.filter(x => x !== w);
+  commit();
+}
+
+// target is "" (idle) or "kind:id"
+function assign(id, target) {
+  const w = state.workers.find(w => w.id === id);
+  if (!w || state.phase !== 'play') return;
+  if (!target) w.at = null;
+  else {
+    const [kind, bid] = target.split(':');
+    const b = findBuilding(kind, Number(bid));
+    if (b && crew(kind, b).filter(x => x !== w).length < CFG.slots) w.at = { kind, id: b.id };
+  }
+  commit();
+}
+
+function buyRaw(key, n) {
+  if (state.phase !== 'play' || !RAW.includes(key)) return;
+  n = Math.min(n, capacity() - stored());
+  while (n > 0 && buyCost(key, n) > state.gold) n--;
+  if (n <= 0) return;
+  state.gold -= buyCost(key, n, true);
+  state.inv[key] += n;
   commit();
 }
 
@@ -609,6 +720,7 @@ function demolish(kind, id) {
   const refund = Math.round(b.paid * CFG.refund);
   if (state.round < CFG.rounds && !confirm(`Sell this building for ${fmt(refund)} gold?`)) return;
   state.gold += refund;
+  for (const w of crew(kind, b)) w.at = null;
   state[kind] = state[kind].filter(x => x !== b);
   commit();
 }
@@ -658,7 +770,7 @@ function runProcessor(kind, r) {
   const { input, output } = PROCESSORS[kind];
   const out = r.processed[kind] = { made: 0, idle: 0 };
   for (const b of byLevel(state[kind])) {
-    const want = randRound(processorStats(kind, b.level).capacity);
+    const want = randRound(processorStats(kind, b.level).capacity * workforce(kind, b));
     const n = price(output) > price(input) ? Math.min(want, state.inv[input]) : 0;
     out.idle += want - n;
     out.made += n;
@@ -673,15 +785,16 @@ function endRound() {
   if (state.event && !state.event.result) return showEvent();
 
   const r = { round: state.round, gem: 0, silver: 0, cut: 0, sapphire: 0, diamond: 0, broken: 0, idleCut: 0,
-              ring: 0, necklace: 0, idleCraft: 0, lost: {}, upkeep: 0, debt: 0, forced: 0,
+              ring: 0, necklace: 0, idleCraft: 0, lost: {}, upkeep: 0, wages: 0, debt: 0, forced: 0,
               processed: {}, strike: !!state.strike, dried: [], autoSold: [], events: [] };
 
   if (state.strike) state.strike--;
   else for (const m of state.mine) {
-    if (m.reserve === 0) continue;
+    const force = workforce('mine', m);
+    if (m.reserve === 0 || !force) continue;
     const s = mineStats(m);
     const isGem = rand() < s.gemChance;
-    let n = randRound((isGem ? 3 : 2) * s.mult);
+    let n = randRound((isGem ? 3 : 2) * s.mult * force);
     if (m.reserve !== null) {
       n = Math.min(n, m.reserve);
       m.reserve -= n;
@@ -695,7 +808,7 @@ function endRound() {
 
   for (const j of byLevel(state.jeweller)) {
     const s = jewellerStats(j.level);
-    const want = randRound(s.capacity);
+    const want = randRound(s.capacity * workforce('jeweller', j));
     const n = Math.min(want, state.inv.gem);
     r.idleCut += want - n;
     state.inv.gem -= n;
@@ -710,7 +823,7 @@ function endRound() {
   runProcessor('glass', r);
 
   for (const g of byLevel(state.smith)) {
-    const want = randRound(smithStats(g.level).capacity);
+    const want = randRound(smithStats(g.level).capacity * workforce('smith', g));
     for (let i = 0; i < want; i++) {
       const item = pickRecipe(g.mode);
       if (!item) { r.idleCraft += want - i; break; }
@@ -722,6 +835,8 @@ function endRound() {
 
   runProcessor('mint', r);
 
+  for (const w of state.workers) if (w.at) w.exp[w.at.kind] = (w.exp[w.at.kind] || 0) + 1;
+
   // warehouse limit: drop the cheapest goods first
   let over = stored() - capacity();
   for (const g of [...GOODS].reverse()) {
@@ -731,7 +846,8 @@ function endRound() {
   }
 
   r.upkeep = upkeepTotal();
-  state.gold -= r.upkeep;
+  r.wages = wagesTotal();
+  state.gold -= r.upkeep + r.wages;
   for (const d of state.debts.filter(d => d.due === state.round)) { state.gold -= d.amount; r.debt += d.amount; }
   state.debts = state.debts.filter(d => d.due !== state.round);
   // can't pay: sell the most valuable goods one at a time
@@ -751,6 +867,7 @@ function endRound() {
   } else {
     state.round++;
     rollSites();
+    rollApplicants();
     maybeEvent();
   }
   commit();
@@ -794,9 +911,9 @@ function sparkline(hist, color) {
   return `<svg class="spark" viewBox="0 0 64 24" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 }
 
-function siteStats(type, level = 0, reserve = null, boost = 0) {
+function siteStats(type, level = 0, reserve = null, boost = 0, force = 1) {
   const s = mineStats({ type, level, boost });
-  return `${pct(s.gemChance)}: ${(3 * s.mult).toFixed(1)} gems · ${pct(1 - s.gemChance)}: ${(2 * s.mult).toFixed(1)} silver` +
+  return `${pct(s.gemChance)}: ${(3 * s.mult * force).toFixed(1)} gems · ${pct(1 - s.gemChance)}: ${(2 * s.mult * force).toFixed(1)} silver` +
     (reserve === null ? '' : reserve === 0 ? ' · <span class="neg">dried up</span>' : ` · ${reserve} units left`);
 }
 
@@ -805,7 +922,7 @@ function render() {
   $('round').textContent = over || final ? 'done' : `${state.round} / ${CFG.rounds}`;
   $('gold').textContent = fmt(state.gold);
   $('gold').className = state.gold < 0 ? 'neg' : 'gold';
-  $('upkeep').textContent = '−' + fmt(upkeepTotal());
+  $('upkeep').textContent = '−' + fmt(upkeepTotal() + wagesTotal());
   $('worth').textContent = fmt(netWorth());
 
   renderOver(perk, final, over);
@@ -837,6 +954,8 @@ function render() {
         <button ${dis} data-sell="${g.key}" data-n="1">Sell 1</button>
         <button ${q < 2 || over ? 'disabled' : ''} data-sell="${g.key}" data-n="10">Sell ${n10 > 1 ? n10 : 10}</button>
         <button ${dis} data-sell="${g.key}" data-n="all">All · ${fmt(saleValue(g.key, q))}</button>
+        ${RAW.includes(g.key) ? [1, 10].map(n => `<button ${play && state.gold >= buyCost(g.key, n) && stored() + n <= cap ? '' : 'disabled'}
+          data-buyraw="${g.key}" data-n="${n}">Buy ${n} · ${fmt(buyCost(g.key, n))}</button>`).join('') : ''}
         <label class="order" title="Sell automatically whenever the price is at or above this">auto ≥
           <input type="number" min="0" inputmode="numeric" class="${order ? 'on' : ''}" data-order="${g.key}" value="${order}" placeholder="off" ${play ? '' : 'disabled'}></label>
       </span>
@@ -869,25 +988,23 @@ function render() {
   $('buildingsSection').hidden = over || perk;
   $('overheadText').textContent = buildingCount() > 1 ? `${kindCount()} kinds · overhead +${Math.round((overheadMult() - 1) * 100)}%` : '';
   const rows = [];
-  state.mine.forEach(m => {
-    rows.push(buildingRow('mine', m, `⛏️ ${SITES[m.type].name}` + (m.boost > 0 ? `<span class="tag">×2 for ${m.boost}</span>` : ''),
-      siteStats(m.type, m.level, m.reserve, m.boost)));
-  });
-  state.jeweller.forEach((j, i) => {
-    const s = jewellerStats(j.level);
-    rows.push(buildingRow('jeweller', j, `🔨 Jeweller ${i + 1}`,
-      `cuts ${s.capacity.toFixed(1)}/round · ${pct(s.fail)} fail · ${pct(s.diamondChance)} diamond`));
-  });
-  state.smith.forEach((g, i) => {
-    rows.push(buildingRow('smith', g, `💍 Goldsmith ${i + 1}`, `crafts ${smithStats(g.level).capacity.toFixed(1)}/round`,
-      `<button ${play ? '' : 'disabled'} data-mode="${g.id}" title="Change what this goldsmith makes">Makes: ${g.mode}</button>`));
-  });
-  for (const kind of ['mint', 'glass']) state[kind].forEach((b, i) => {
-    const p = PROCESSORS[kind];
-    rows.push(buildingRow(kind, b, `${CFG.buildings[kind].label} ${i + 1}`,
-      `turns ${processorStats(kind, b.level).capacity.toFixed(1)} ${lower(p.input)}/round into ${lower(p.output)}`));
-  });
-  $('buildings').innerHTML = rows.join('') || '<div class="empty">Nothing yet. Start by buying a mine site.</div>';
+  for (const { kind, b, name } of buildingList()) {
+    const f = workforce(kind, b);
+    let stats;
+    if (kind === 'mine') stats = siteStats(b.type, b.level, b.reserve, b.boost, f);
+    else if (kind === 'jeweller') { const s = jewellerStats(b.level);
+      stats = `cuts ${(s.capacity * f).toFixed(1)}/round · ${pct(s.fail)} fail · ${pct(s.diamondChance)} diamond`; }
+    else if (kind === 'smith') stats = `crafts ${(smithStats(b.level).capacity * f).toFixed(1)}/round`;
+    else { const p = PROCESSORS[kind];
+      stats = `turns ${(processorStats(kind, b.level).capacity * f).toFixed(1)} ${lower(p.input)}/round into ${lower(p.output)}`; }
+    const n = crew(kind, b).length;
+    stats = (n ? `👷 ${n}/${CFG.slots} · ` : `<span class="neg">no workers, produces nothing</span> · `) + stats;
+    rows.push(buildingRow(kind, b, name + (b.boost > 0 ? `<span class="tag">×2 for ${b.boost}</span>` : ''), stats,
+      kind === 'smith' ? `<button ${play ? '' : 'disabled'} data-mode="${b.id}" title="Change what this goldsmith makes">Makes: ${b.mode}</button>` : ''));
+  }
+  $('buildings').innerHTML = rows.join('') || '<div class="empty">Nothing yet. Start with a mine site or a workshop.</div>';
+
+  renderWorkers(play, over || perk);
 
   // leaderboard
   const board = load(BOARD_KEY, []);
@@ -904,6 +1021,44 @@ function render() {
   eb.disabled = over || perk;
   eb.textContent = over ? 'Game over' : perk ? 'Choose a perk first' : pending ? '⬆ Decide on the event first'
     : final ? 'Finish game' : state.round === CFG.rounds ? 'End final round' : `End round ${state.round}`;
+}
+
+// every building with a display name, numbered within its kind
+function buildingList() {
+  const list = [];
+  for (const kind of KINDS) state[kind].forEach((b, i) => list.push({ kind, b,
+    name: kind === 'mine' ? `⛏️ ${SITES[b.type].name}` : `${CFG.buildings[kind].label} ${i + 1}` }));
+  return list;
+}
+
+function workerSkill(w) {
+  const k = w.at && w.at.kind, e = k ? w.exp[k] || 0 : 0;
+  const now = k && e ? ` → <b>${pct(effSkill(w, k))}</b> after ${Math.min(e, CFG.expCap)} round${e > 1 ? 's' : ''} ${TASKS[k]}` : '';
+  const other = Object.entries(w.exp).filter(([t]) => t !== k).map(([t, n]) => `${TASKS[t]} ${n}`).join(', ');
+  return `skill ${pct(w.skill)}${now}${other ? ` · experience: ${other}` : ''}`;
+}
+
+function renderWorkers(play, hide) {
+  $('workersSection').hidden = hide;
+  const blds = buildingList();
+  $('wageText').textContent = `wages −${fmt(wagesTotal())} / round`;
+  $('workers').innerHTML = state.workers.map(w => {
+    const cur = w.at ? `${w.at.kind}:${w.at.id}` : '';
+    const opts = [`<option value="">Idle</option>`, ...blds.map(({ kind, b, name }) => {
+      const v = `${kind}:${b.id}`, n = crew(kind, b).length;
+      return `<option value="${v}" ${v === cur ? 'selected' : ''} ${v !== cur && n >= CFG.slots ? 'disabled' : ''}>${name} (${n}/${CFG.slots})</option>`;
+    })].join('');
+    return `<div class="row">
+      <span class="name">${escapeHtml(w.name)}${w.you ? '<span class="tag">you</span>' : ''}
+        <small>${workerSkill(w)} · ${w.you ? 'no wage' : `wage ${w.wage}`}</small></span>
+      <span class="btns"><select data-assign="${w.id}" ${play ? '' : 'disabled'} aria-label="Assign ${escapeHtml(w.name)}">${opts}</select>
+        ${w.you ? '' : `<button ${play ? '' : 'disabled'} data-fire="${w.id}">Let go</button>`}</span>
+    </div>`;
+  }).join('');
+  $('applicants').innerHTML = state.applicants.map(a => `<div class="row">
+      <span class="name">${escapeHtml(a.name)}<small>skill ${pct(a.skill)} · wage ${a.wage}</small></span>
+      <button class="primary" data-hire="${a.id}" ${play ? '' : 'disabled'}>Hire</button>
+    </div>`).join('') || '<div class="empty">You hired everyone on offer. New applicants arrive next round.</div>';
 }
 
 function renderOver(perk, final, over) {
@@ -946,7 +1101,12 @@ function renderEvent() {
 
 function renderStatus(play) {
   const items = [];
+  if (state.round === 1 && !buildingCount()) items.push(`👋 <b>Start small:</b> you can afford one building. A mine gives you raw goods for free but slowly. A workshop earns more, but you have to buy its raw goods on the market. Either way, you work in it yourself at first, then hire workers as the gold comes in.`);
   if (state.perk) items.push(`Perk: <b>${PERKS[state.perk].name}</b> <span class="muted">(${PERKS[state.perk].desc})</span>`);
+  const empty = buildingList().filter(({ kind, b }) => !crew(kind, b).length);
+  if (empty.length) items.push(`<span class="neg">👷 No workers at ${empty.map(e => e.name).join(', ')}, so ${empty.length > 1 ? 'they produce' : 'it produces'} nothing.</span>`);
+  const idle = state.workers.filter(w => !w.at);
+  if (idle.length) items.push(`<span class="muted">Idle: ${idle.map(w => escapeHtml(w.name)).join(', ')}${idle.some(w => !w.you) ? ' (still paid)' : ''}.</span>`);
   const guildNames = state.guilds.map(k => CFG.buildings[k].name).join(' and ');
   if (specialist()) items.push(`🏅 Specialist: the ${guildNames} guild is your only guild, so its buildings produce <b>+${pct(CFG.specialistBonus - 1)}</b>. Joining a second guild ends this.`);
   else if (state.guilds.length) items.push(`Guilds: <b>${guildNames}</b> <span class="muted">(no licences left)</span>`);
@@ -978,7 +1138,7 @@ function renderReport(hide) {
     (proc.mint.idle ? ` <span class="muted">${proc.mint.idle} were not struck (no silver, or coins were worth no more than silver).</span>` : ''));
   const lost = Object.entries(r.lost);
   if (lost.length) items.push(`<span class="neg">Warehouse full! Lost ${lost.map(([k, n]) => `${n} ${k.toLowerCase()}`).join(', ')}.</span>`);
-  if (r.upkeep) items.push(`You paid <b>${fmt(r.upkeep)}</b> gold in upkeep.`);
+  if (r.upkeep || r.wages) items.push(`You paid <b>${fmt(r.upkeep)}</b> gold in upkeep` + (r.wages ? ` and <b>${fmt(r.wages)}</b> in wages.` : '.'));
   if (r.debt) items.push(`You repaid the investor <b>${fmt(r.debt)}</b> gold.`);
   if (r.forced) items.push(`<span class="neg">You couldn't cover your bills, so goods worth ${fmt(r.forced)} gold were sold automatically.</span>`);
   items.push(...r.events);
@@ -1019,6 +1179,9 @@ document.addEventListener('click', e => {
   if (!t) return;
   const d = t.dataset;
   if (d.sell) return sell(d.sell, d.n === 'all' ? state.inv[d.sell] : Number(d.n));
+  if (d.buyraw) return buyRaw(d.buyraw, Number(d.n));
+  if (d.hire) return hire(Number(d.hire));
+  if (d.fire) return fire(Number(d.fire));
   if (d.upgrade) return upgrade(d.upgrade, Number(d.id));
   if (d.demolish) return demolish(d.demolish, Number(d.id));
   if (d.mode) return cycleMode(Number(d.mode));
@@ -1028,6 +1191,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => {
   if (e.target.dataset.order) setOrder(e.target.dataset.order, e.target.value);
+  if (e.target.dataset.assign) assign(Number(e.target.dataset.assign), e.target.value);
 });
 
 render();
