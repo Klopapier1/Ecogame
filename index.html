@@ -133,6 +133,16 @@
     </div>
   </section>
 
+  <section id="capitalSection">
+    <h2>🏙️ Capital market <span>reached by cart only</span></h2>
+    <div id="capital"></div>
+    <div class="buy" style="margin-top:10px">
+      <b>🐴 Carts <span class="muted" style="font-weight:400;font-size:13px">· 2 rounds there and back</span></b>
+      <div id="carts"></div>
+      <button class="primary" id="buyCart"></button>
+    </div>
+  </section>
+
   <section id="buildSection">
     <h2>Build <span id="guildText"></span></h2>
     <div class="buy sites">
@@ -193,20 +203,21 @@
       <ul class="report">
         <li>You have <b>25 rounds</b> and start with <b>500 gold</b>, enough for one building, plus one perk you pick from three. Whoever has the most gold at the end wins. Goods you haven't sold count for nothing.</li>
         <li><b>Mine sites:</b> each round 3 sites are offered. Hillside mines are average, silver veins produce almost only silver, gem pockets give lots of gems but run dry, rich lodes are strong but also run dry, and deep shafts are expensive but produce a lot. Each mine you already own makes the next one 12% more expensive.</li>
-        <li><b>Workers:</b> a building produces nothing without workers. Each building takes up to 2, and its output grows with their combined skill: a worker with 100% skill produces the amounts below, one with 130% produces 30% more. You are a worker too, with 100% skill and no wage. New applicants arrive every round. A worker's wage is roughly 40 × skill, give or take 30%, so some are bargains. Hired workers are paid every round, even while idle, and you can let them go at any time.</li>
-        <li><b>Experience:</b> each round a worker spends on a task (mining, cutting, crafting, minting, glassmaking) adds +5% to their skill at that task, up to +50% after 10 rounds. Their wage stays the same. Experience is kept per task, so moving a worker elsewhere starts them fresh there, and moving them back picks up where they left off.</li>
+        <li><b>Workers:</b> a building produces nothing without workers. Each building takes up to 2. The more skilled one sets the pace, and a second worker shares the same tools, so they add only <b>half</b> their skill: two average workers produce 150% of one, not 200%. A worker with 100% skill produces the amounts below, one with 120% produces 20% more. You are a worker too, with 100% skill and no wage. New applicants arrive every round, with skills from 60% to 140%. A worker's wage is roughly 40 × skill, give or take 30%, so some are bargains. Hired workers are paid every round, even while idle, and you can let them go at any time.</li>
+        <li><b>Experience:</b> on a task that is new to them (mining, cutting, crafting, minting, glassmaking) a worker manages only <b>85%</b> of their skill. Each round on it closes a quarter of the gap to <b>120%</b>: about 100% after 2 rounds, 110% after 4, and it levels off after that. Their wage stays the same. Experience is kept per task, so moving a worker elsewhere makes them a beginner there, and moving them back picks up where they left off.</li>
         <li><b>Buying raw goods:</b> you can buy uncut gems and silver on the market for 25% above their selling price. Each unit you buy raises the price.</li>
         <li><b>Jeweller:</b> cuts 2 uncut gems a round. Each cut fails 10% of the time and the gem is lost. Otherwise you get a sapphire (80%) or a diamond (20%).</li>
         <li><b>Goldsmith:</b> crafts 2 pieces a round, either a ring (1 silver + 1 sapphire) or a necklace (2 silver + 1 diamond). On <i>auto</i>, it makes whichever is worth more than its materials at current prices, and nothing if neither is.</li>
         <li><b>Mint:</b> strikes 3 silver a round into 3 coins. <b>Glassworks:</b> melts 3 uncut gems a round into 3 panes of stained glass. Both sit idle while their product is worth no more than its raw material. Coins and glass lose very little price as you sell, so they suit selling in bulk.</li>
         <li><b>Guilds:</b> jewellers, goldsmiths, mints and glassworks each need a guild licence. You join a guild when you build your first building of that kind. You can only ever join <b>2 guilds</b>, and a licence stays used even if you sell the buildings later. While you are in just <b>one</b> guild, its buildings produce <b>25% more</b>.</li>
         <li>An <b>upgrade</b> costs 300, up to 3 per building, and adds +20% output. On a mine it also adds +10 points to the gem chance. On a jeweller it adds +10 points to the diamond chance and lowers the failure rate by 3 points.</li>
-        <li><b>Market:</b> each unit you sell lowers that good's price, and the price recovers 35% of the way back each round. Prices also drift at random, with occasional rushes and crashes.</li>
+        <li><b>Market:</b> each unit you sell lowers that good's price. Each round the town's buyers take a few units off the market (shown as "buyers ~N/round", it varies a little), which undoes that much of your selling, and then the price recovers another 35% of the remaining way back. Prices also drift at random, with occasional rushes and crashes.</li>
+        <li><b>Capital and carts:</b> the capital pays about 30% more for necklaces, rings, diamonds and stained glass and 20% less for raw goods. It is a bigger market: your sales push its prices down less, it has twice the buyers, and its prices swing harder. Only carts get there. A cart costs 300 (more for each extra one), has 10 upkeep, carries 12 goods and needs a worker as its driver. Load it and send it: it sells everything in the capital at the end of that round, at whatever the prices are then, and comes back with the gold at the end of the next round. Goods in a cart don't take warehouse space. The last cart can leave in round 24.</li>
         <li><b>Auto-sell:</b> set a minimum price for a good. After the market moves each round, and as soon as you set the order, units are sold one at a time while the price is at or above your limit.</li>
         <li><b>Events:</b> some rounds bring an event that you must decide on before ending the round.</li>
         <li><b>Upkeep:</b> each mine costs 15–30 a round depending on its site type, a glassworks 15, a jeweller 20, a mint 25 and a goldsmith 30. Each <i>kind</i> of building you own after the first adds 10% overhead on top, and every mine site type (hillside, silver vein, …) counts as its own kind. More buildings of a kind you already own add no overhead. Wages are paid on top. If you can't pay, your most valuable goods are sold automatically, and if that still isn't enough, your most recent hires go unpaid and quit, one at a time, until the rest can be paid. You can sell a building for 50% of what you paid for it.</li>
         <li><b>Warehouse:</b> holds 40 goods to start. Anything over the limit at the end of a round is lost, cheapest goods first.</li>
-        <li>Order at the end of each round: mines, then jewellers, glassworks, goldsmiths and mints (best-upgraded first within each kind), then workers gain experience, then the warehouse limit, then upkeep, wages and debts, then the market moves, then auto-sell orders run.</li>
+        <li>Order at the end of each round: mines, then jewellers, glassworks, goldsmiths and mints (best-upgraded first within each kind), then workers gain experience, then the warehouse limit, then returning carts hand over their gold, then upkeep, wages and debts, then both markets move, then arriving carts sell in the capital, then auto-sell orders run.</li>
       </ul>
     </details>
     <div style="margin-top:10px"><button id="newGame">Start new game</button></div>
@@ -227,20 +238,23 @@ const CFG = {
   overhead: 0.10,          // per distinct kind of building after the first (each mine site type is a kind)
   maxGuilds: 2,
   specialistBonus: 1.25,   // output of a guild's buildings while it is your only guild
-  recovery: 0.35,
+  recovery: 0.35,          // share of the remaining gap a price recovers each round, after the buyers
   storageBase: 40,
   storageStep: 40,
   storageCost: 200,
   eventChance: 0.4,
   slots: 2,                // workers per building
+  helperShare: 0.5,        // the second worker shares the first one's tools and adds half their skill
   wageBase: 40,            // wage of a 100% worker, before the +-wageSpread roll
   wageSpread: 0.3,
   applicants: 3,
-  expGain: 0.05,           // skill bonus per round spent on a task
-  expCap: 10,              // rounds after which experience stops adding
+  rookie: 0.85,            // share of their skill a worker manages on a task that is new to them
+  expMax: 0.2,             // the most experience ever adds to a worker's skill
+  expRate: 0.75,           // each round on a task closes 25% of the remaining gap to expMax
   buyMarkup: 1.25,
   loanRound: 4,             // Bank loan perk pays out at the start of this round
   loanAmount: 600,         // raw goods cost this much more than they sell for
+  cart: { base: 300, upkeep: 10, capacity: 12 },
   buildings: {
     mine:     { label: '⛏️ Mine' },
     jeweller: { base: 400, upkeep: 20, label: '🔨 Jeweller',   name: 'Jeweller' },
@@ -249,17 +263,22 @@ const CFG = {
     glass:    { base: 300, upkeep: 15, label: '🪟 Glassworks', name: 'Glassworks' },
   },
 };
-// drop = price fall per unit sold; order = most valuable first (also the forced-sale order)
+// drop = price fall per unit sold; demand = units the town's buyers take off the market each round
+// order = most valuable first (also the forced-sale order)
 const GOODS = [
-  { key: 'necklace', label: 'Necklaces',  base: 450, drop: 0.025, color: 'var(--necklace)' },
-  { key: 'ring',     label: 'Rings',      base: 220, drop: 0.02,  color: 'var(--ring)' },
-  { key: 'diamond',  label: 'Diamonds',   base: 150, drop: 0.02,  color: 'var(--diamond)' },
-  { key: 'sapphire', label: 'Sapphires',  base: 80,  drop: 0.015, color: 'var(--sapphire)' },
-  { key: 'coin',     label: 'Coins',      base: 80,  drop: 0.004, color: 'var(--coin)' },
-  { key: 'glass',    label: 'Stained glass', base: 75, drop: 0.005, color: 'var(--glass)' },
-  { key: 'silver',   label: 'Silver',     base: 40,  drop: 0.01,  color: 'var(--silver)' },
-  { key: 'gem',      label: 'Uncut gems', base: 30,  drop: 0.01,  color: 'var(--gem)' },
+  { key: 'necklace', label: 'Necklaces',  base: 450, drop: 0.025, demand: 3,  color: 'var(--necklace)' },
+  { key: 'ring',     label: 'Rings',      base: 220, drop: 0.02,  demand: 4,  color: 'var(--ring)' },
+  { key: 'diamond',  label: 'Diamonds',   base: 150, drop: 0.02,  demand: 4,  color: 'var(--diamond)' },
+  { key: 'sapphire', label: 'Sapphires',  base: 80,  drop: 0.015, demand: 6,  color: 'var(--sapphire)' },
+  { key: 'coin',     label: 'Coins',      base: 80,  drop: 0.004, demand: 15, color: 'var(--coin)' },
+  { key: 'glass',    label: 'Stained glass', base: 75, drop: 0.005, demand: 12, color: 'var(--glass)' },
+  { key: 'silver',   label: 'Silver',     base: 40,  drop: 0.01,  demand: 10, color: 'var(--silver)' },
+  { key: 'gem',      label: 'Uncut gems', base: 30,  drop: 0.01,  demand: 10, color: 'var(--gem)' },
 ];
+// the capital, reached only by cart: pays more for luxuries and less for raw goods, is deeper (your sales
+// move it less, more buyers) and swings harder
+const CITY = { base: { necklace: 1.3, ring: 1.3, diamond: 1.25, sapphire: 1.15, coin: 1, glass: 1.3, silver: 0.8, gem: 0.8 },
+               drop: 0.6, demand: 2, vol: 0.12 };
 const GOOD = Object.fromEntries(GOODS.map(g => [g.key, g]));
 const KINDS = Object.keys(CFG.buildings);
 const GUILDS = KINDS.filter(k => k !== 'mine');
@@ -295,8 +314,8 @@ const PERKS = {
 };
 
 const SAVE_KEY = 'gemtycoon.game.v3';
-// v3 board: scores from before workers (1000 starting gold) aren't comparable
-const BOARD_KEY = 'gemtycoon.leaderboard.v3';
+// v4 board: scores from before the worker rework and the capital aren't comparable
+const BOARD_KEY = 'gemtycoon.leaderboard.v4';
 const NAME_KEY = 'gemtycoon.name';
 
 let rand = Math.random;
@@ -354,18 +373,24 @@ const overheadMult = () => 1 + CFG.overhead * Math.max(0, kindCount() - 1);
 const canJoin = kind => kind === 'mine' || state.guilds.includes(kind) || state.guilds.length < CFG.maxGuilds;
 const buildingUpkeep = (kind, b) => kind === 'mine' ? SITES[b.type].upkeep * (hasPerk('charter') ? 0.5 : 1) : CFG.buildings[kind].upkeep;
 function upkeepTotal() {
-  const base = KINDS.reduce((s, k) => s + state[k].reduce((t, b) => t + buildingUpkeep(k, b), 0), 0);
+  const base = KINDS.reduce((s, k) => s + state[k].reduce((t, b) => t + buildingUpkeep(k, b), 0), 0) + state.cart.length * CFG.cart.upkeep;
   return Math.round(base * overheadMult() * (hasPerk('loan') ? 1.25 : 1) * (hasPerk('thrifty') ? 0.7 : 1));
 }
 
-const effSkill = (w, kind) => w.skill * (1 + CFG.expGain * Math.min(w.exp[kind] || 0, CFG.expCap));
+// learning curve: rookie share on the first round, then quick gains that level off at 1 + expMax
+const effSkill = (w, kind) => w.skill * (1 + CFG.expMax - (1 + CFG.expMax - CFG.rookie) * Math.pow(CFG.expRate, w.exp[kind] || 0));
 const crew = (kind, b) => state.workers.filter(w => w.at && w.at.kind === kind && w.at.id === b.id);
-const workforce = (kind, b) => crew(kind, b).reduce((s, w) => s + effSkill(w, kind), 0);
+// the best worker counts fully, the second one as a helper
+const workforce = (kind, b) => crew(kind, b).map(w => effSkill(w, kind)).sort((x, y) => y - x)
+  .reduce((s, e, i) => s + e * (i ? CFG.helperShare : 1), 0);
+const slotsOf = kind => kind === 'cart' ? 1 : CFG.slots;
+const cartLoad = c => Object.values(c.load).reduce((s, n) => s + n, 0);
+const onTrip = w => !!(w.at && w.at.kind === 'cart' && (findBuilding('cart', w.at.id) || {}).trip);
 const wagesTotal = () => state.workers.reduce((s, w) => s + w.wage, 0);
 const you = () => state.workers.find(w => w.you);
 
 function makeApplicant() {
-  const skill = Math.round(clamp(1 + gauss() * 0.25, 0.5, 1.6) * 20) / 20;
+  const skill = Math.round(clamp(1 + gauss() * 0.18, 0.6, 1.4) * 20) / 20;
   const wage = Math.max(5, Math.round(CFG.wageBase * skill * (1 + (rand() * 2 - 1) * CFG.wageSpread)));
   return { id: state.nextId++, name: pick(NAMES), skill, wage, at: null, exp: {} };
 }
@@ -381,17 +406,20 @@ function rollSites() {
 }
 
 // ---- market ----
-const baseOf = key => GOOD[key].base * (key === 'silver' && hasPerk('silverRights') ? 1.25 : 1);
-const dropOf = key => GOOD[key].drop * (hasPerk('friend') ? 0.5 : 1);
-const price = key => Math.max(1, Math.round(baseOf(key) * state.market[key].sat * state.market[key].trend));
+// where: 'town' (your own market) or 'city' (the capital)
+const mkt = (key, where = 'town') => (where === 'city' ? state.city : state.market)[key];
+const baseOf = (key, where = 'town') => GOOD[key].base * (key === 'silver' && hasPerk('silverRights') ? 1.25 : 1) * (where === 'city' ? CITY.base[key] : 1);
+const dropOf = (key, where = 'town') => GOOD[key].drop * (hasPerk('friend') ? 0.5 : 1) * (where === 'city' ? CITY.drop : 1);
+const demandOf = (key, where = 'town') => GOOD[key].demand * (where === 'city' ? CITY.demand : 1);
+const price = (key, where = 'town') => Math.max(1, Math.round(baseOf(key, where) * mkt(key, where).sat * mkt(key, where).trend));
 
 // Gold from selling n units, walking the price down unit by unit; mutates only when commit.
-function saleValue(key, n, commit = false) {
-  const m = state.market[key];
+function saleValue(key, n, commit = false, where = 'town') {
+  const m = mkt(key, where);
   let sat = m.sat, total = 0;
   for (let i = 0; i < n; i++) {
-    total += Math.max(1, Math.round(baseOf(key) * sat * m.trend));
-    sat = Math.max(0.2, sat * (1 - dropOf(key)));
+    total += Math.max(1, Math.round(baseOf(key, where) * sat * m.trend));
+    sat = Math.max(0.2, sat * (1 - dropOf(key, where)));
   }
   if (commit) m.sat = sat;
   return total;
@@ -410,13 +438,16 @@ function buyCost(key, n, commit = false) {
 }
 
 function moveMarket(r) {
-  for (const g of GOODS) {
-    const m = state.market[g.key];
+  for (const where of ['town', 'city']) for (const g of GOODS) {
+    const m = mkt(g.key, where), city = where === 'city';
+    // buyers take a few units off the market, undoing that much of your selling, then the rest recovers by a share
+    const buyers = randRound(demandOf(g.key, where) * (0.7 + rand() * 0.6));
+    if (m.sat < 1) m.sat = Math.min(1, m.sat / Math.pow(1 - dropOf(g.key, where), buyers));
     m.sat += (1 - m.sat) * CFG.recovery;
-    m.trend = clamp(m.trend + (1 - m.trend) * 0.15 + gauss() * 0.07, 0.5, 2.2);
-    const roll = rand();
-    if (roll < 0.025) { m.trend = clamp(m.trend * 1.4, 0.5, 2.2); r.events.push(`📈 ${g.label} rush! Prices jump.`); }
-    else if (roll < 0.05) { m.trend = clamp(m.trend * 0.7, 0.5, 2.2); r.events.push(`📉 ${g.label} crash! Prices tumble.`); }
+    m.trend = clamp(m.trend + (1 - m.trend) * 0.15 + gauss() * (city ? CITY.vol : 0.07), 0.5, 2.2);
+    const roll = rand(), tell = !city || state.cart.length, at = city ? ' in the capital' : '';
+    if (roll < 0.025) { m.trend = clamp(m.trend * 1.4, 0.5, 2.2); if (tell) r.events.push(`📈 ${g.label} rush${at}! Prices jump.`); }
+    else if (roll < 0.05) { m.trend = clamp(m.trend * 0.7, 0.5, 2.2); if (tell) r.events.push(`📉 ${g.label} crash${at}! Prices tumble.`); }
   }
   // scheduled wedding rushes land for the round about to start
   for (const s of state.rushes.filter(s => s.due === state.round + 1)) {
@@ -425,9 +456,9 @@ function moveMarket(r) {
     r.events.push(`🎉 The Duke's wedding! ${GOOD[s.key].label} prices soar.`);
   }
   state.rushes = state.rushes.filter(s => s.due > state.round + 1);
-  for (const g of GOODS) {
-    const m = state.market[g.key];
-    m.hist.push(price(g.key));
+  for (const where of ['town', 'city']) for (const g of GOODS) {
+    const m = mkt(g.key, where);
+    m.hist.push(price(g.key, where));
     if (m.hist.length > 12) m.hist.shift();
   }
 }
@@ -565,13 +596,16 @@ function chooseEvent(i) {
 }
 
 // ---- game lifecycle ----
+function freshMarket(where) {
+  return Object.fromEntries(GOODS.map(g => [g.key, { sat: 1, trend: 1, hist: [Math.round(g.base * (where === 'city' ? CITY.base[g.key] : 1))] }]));
+}
+
 function newGame() {
-  const market = {};
-  for (const g of GOODS) market[g.key] = { sat: 1, trend: 1, hist: [g.base] };
   return {
-    v: 5, round: 1, gold: CFG.startGold, phase: 'perk', nextId: 1, storageLevel: 0,
+    v: 6, round: 1, gold: CFG.startGold, phase: 'perk', nextId: 1, storageLevel: 0,
     inv: Object.fromEntries(GOODS.map(g => [g.key, 0])),
-    mine: [], jeweller: [], smith: [], mint: [], glass: [], guilds: [], sites: [], market, orders: {},
+    mine: [], jeweller: [], smith: [], mint: [], glass: [], cart: [], guilds: [], sites: [],
+    market: freshMarket('town'), city: freshMarket('city'), orders: {},
     workers: [{ id: 0, name: 'You', you: true, skill: 1, wage: 0, at: null, exp: {} }], applicants: [], loanPaid: false,
     perk: null, perkOffers: shuffled(Object.keys(PERKS)).slice(0, 3),
     event: null, strike: 0, rushes: [], debts: [],
@@ -602,7 +636,9 @@ if (state && state.v === 4) {
   }
   if (state.phase === 'play') rollApplicants();
 }
-if (!state || state.v !== 5) state = newGame();
+// v5 -> v6: the capital market and carts
+if (state && state.v === 5) Object.assign(state, { v: 6, cart: [], city: freshMarket('city') });
+if (!state || state.v !== 6) state = newGame();
 // games started before the loan was deferred already got the 600 at the start
 if (state.loanPaid === undefined) state.loanPaid = true;
 
@@ -617,7 +653,10 @@ function choosePerk(id) {
 }
 
 function netWorth() {
-  return state.gold + GOODS.reduce((s, g) => s + state.inv[g.key] * price(g.key), 0);
+  // cart cargo counts at town prices until it is sold, then the gold it fetched
+  const carts = state.cart.reduce((s, c) => s + (c.trip && c.trip.gold ? c.trip.gold
+    : Object.entries(c.load).reduce((t, [k, n]) => t + n * price(k), 0)), 0);
+  return state.gold + carts + GOODS.reduce((s, g) => s + state.inv[g.key] * price(g.key), 0);
 }
 
 // ---- actions ----
@@ -667,7 +706,7 @@ function hire(id) {
 
 function fire(id) {
   const w = state.workers.find(w => w.id === id);
-  if (state.phase !== 'play' || !w || w.you || w.family) return;
+  if (state.phase !== 'play' || !w || w.you || w.family || onTrip(w)) return;
   state.workers = state.workers.filter(x => x !== w);
   commit();
 }
@@ -675,12 +714,12 @@ function fire(id) {
 // target is "" (idle) or "kind:id"
 function assign(id, target) {
   const w = state.workers.find(w => w.id === id);
-  if (!w || state.phase !== 'play') return;
+  if (!w || state.phase !== 'play' || onTrip(w)) return;
   if (!target) w.at = null;
   else {
     const [kind, bid] = target.split(':');
     const b = findBuilding(kind, Number(bid));
-    if (b && crew(kind, b).filter(x => x !== w).length < CFG.slots) w.at = { kind, id: b.id };
+    if (b && !b.trip && crew(kind, b).filter(x => x !== w).length < slotsOf(kind)) w.at = { kind, id: b.id };
   }
   commit();
 }
@@ -692,6 +731,52 @@ function buyRaw(key, n) {
   if (n <= 0) return;
   state.gold -= buyCost(key, n, true);
   state.inv[key] += n;
+  commit();
+}
+
+// ---- carts ----
+const cartPrice = () => priceFor(CFG.cart.base, state.cart.length);
+
+function buyCart() {
+  const cost = cartPrice();
+  if (state.phase !== 'play' || state.gold < cost) return;
+  state.gold -= cost;
+  state.cart.push({ id: state.nextId++, paid: cost, load: {}, trip: null });
+  commit();
+}
+
+function loadCart(id, key, n) {
+  const c = findBuilding('cart', id);
+  if (state.phase !== 'play' || !c || c.trip || !GOOD[key]) return;
+  n = Math.min(n, state.inv[key], CFG.cart.capacity - cartLoad(c));
+  if (n <= 0) return;
+  state.inv[key] -= n;
+  c.load[key] = (c.load[key] || 0) + n;
+  commit();
+}
+
+function unloadCart(c) {
+  for (const [k, n] of Object.entries(c.load)) state.inv[k] += n;
+  c.load = {};
+}
+
+function sendCart(id) {
+  const c = findBuilding('cart', id);
+  // it must be back by the end of the last round
+  if (state.phase !== 'play' || !c || c.trip || !cartLoad(c) || !crew('cart', c).length || state.round >= CFG.rounds) return;
+  c.trip = { arrive: state.round, back: state.round + 1, gold: 0 };
+  commit();
+}
+
+function sellCart(id) {
+  const c = findBuilding('cart', id);
+  if (state.phase !== 'play' || !c || c.trip) return;
+  const refund = Math.round(c.paid * CFG.refund);
+  if (state.round < CFG.rounds && !confirm(`Sell this cart for ${fmt(refund)} gold?`)) return;
+  unloadCart(c);
+  state.gold += refund;
+  for (const w of crew('cart', c)) w.at = null;
+  state.cart = state.cart.filter(x => x !== c);
   commit();
 }
 
@@ -786,7 +871,7 @@ function endRound() {
 
   const r = { round: state.round, gem: 0, silver: 0, cut: 0, sapphire: 0, diamond: 0, broken: 0, idleCut: 0,
               ring: 0, necklace: 0, idleCraft: 0, lost: {}, upkeep: 0, wages: 0, quit: [], debt: 0, forced: 0,
-              processed: {}, strike: !!state.strike, dried: [], autoSold: [], events: [] };
+              processed: {}, strike: !!state.strike, dried: [], autoSold: [], events: [], carts: [] };
 
   if (state.strike) state.strike--;
   else for (const m of state.mine) {
@@ -835,7 +920,7 @@ function endRound() {
 
   runProcessor('mint', r);
 
-  for (const w of state.workers) if (w.at) w.exp[w.at.kind] = (w.exp[w.at.kind] || 0) + 1;
+  for (const w of state.workers) if (w.at && w.at.kind !== 'cart') w.exp[w.at.kind] = (w.exp[w.at.kind] || 0) + 1;
 
   // warehouse limit: drop the cheapest goods first
   let over = stored() - capacity();
@@ -844,6 +929,14 @@ function endRound() {
     const n = Math.min(over, state.inv[g.key]);
     if (n > 0) { state.inv[g.key] -= n; r.lost[g.label] = n; over -= n; }
   }
+
+  // carts coming home bring the capital's gold
+  state.cart.forEach((c, i) => {
+    if (!c.trip || c.trip.back !== state.round) return;
+    state.gold += c.trip.gold;
+    r.carts.push(`🐴 Cart ${i + 1} is back with <b>${fmt(c.trip.gold)}</b> gold.`);
+    c.trip = null;
+  });
 
   r.upkeep = upkeepTotal();
   r.wages = wagesTotal();
@@ -860,18 +953,28 @@ function endRound() {
   // still short: the newest hires go unpaid and quit
   for (const w of [...state.workers].reverse()) {
     if (state.gold >= 0) break;
-    if (!w.wage) continue;
+    if (!w.wage || onTrip(w)) continue;
     state.gold += w.wage; r.wages -= w.wage;
     state.workers = state.workers.filter(x => x !== w);
     r.quit.push(w.name);
   }
 
   moveMarket(r);
+  // carts on the road reach the capital and sell everything at its new prices
+  state.cart.forEach((c, i) => {
+    if (!c.trip || c.trip.arrive !== state.round) return;
+    const sold = Object.entries(c.load).filter(([, n]) => n > 0);
+    c.trip.gold = sold.reduce((s, [k, n]) => s + saleValue(k, n, true, 'city'), 0);
+    c.load = {};
+    r.carts.push(`🐴 Cart ${i + 1} sold ${sold.map(([k, n]) => `${n} ${lower(k)}`).join(', ')} in the capital for <b>${fmt(c.trip.gold)}</b>. It is back with the gold at the end of next round.`);
+  });
   runOrders(r.autoSold);
   state.report = r;
   if (state.round >= CFG.rounds) {
     state.phase = 'final';
     state.event = null;
+    // cargo still parked in a cart goes back to the warehouse so it can be sold
+    for (const c of state.cart) unloadCart(c);
   } else {
     state.round++;
     if (hasPerk('loan') && !state.loanPaid && state.round >= CFG.loanRound) {
@@ -959,7 +1062,7 @@ function render() {
     const order = state.orders[g.key] || '';
     return `<div class="row">
       <span class="name"><span class="dot" style="background:${g.color}"></span>${g.label}
-        <small>normal price ${Math.round(baseOf(g.key))}</small></span>
+        <small>normal price ${Math.round(baseOf(g.key))} · buyers ~${demandOf(g.key)}/round</small></span>
       ${sparkline(state.market[g.key].hist, g.color)}
       <span class="price">${p}<small class="${devCls}">${dev >= 0 ? '+' : ''}${Math.round(dev * 100)}%</small></span>
       <span class="qty">${q}<small>owned</small></span>
@@ -1011,12 +1114,13 @@ function render() {
     else { const p = PROCESSORS[kind];
       stats = `turns ${(processorStats(kind, b.level).capacity * f).toFixed(1)} ${lower(p.input)}/round into ${lower(p.output)}`; }
     const n = crew(kind, b).length;
-    stats = (n ? `👷 ${n}/${CFG.slots} · ` : `<span class="neg">no workers, produces nothing</span> · `) + stats;
+    stats = (n ? `👷 ${n}/${CFG.slots} · crew ${pct(f)} · ` : `<span class="neg">no workers, produces nothing</span> · `) + stats;
     rows.push(buildingRow(kind, b, name + (b.boost > 0 ? `<span class="tag">×2 for ${b.boost}</span>` : ''), stats,
       kind === 'smith' ? `<button ${play ? '' : 'disabled'} data-mode="${b.id}" title="Change what this goldsmith makes">Makes: ${b.mode}</button>` : ''));
   }
   $('buildings').innerHTML = rows.join('') || '<div class="empty">Nothing yet. Start with a mine site or a workshop.</div>';
 
+  renderCapital(play, over || perk);
   renderWorkers(play, over || perk);
 
   // leaderboard
@@ -1046,32 +1150,79 @@ function buildingList() {
 
 function workerSkill(w) {
   const k = w.at && w.at.kind, e = k ? w.exp[k] || 0 : 0;
-  const now = k && e ? ` → <b>${pct(effSkill(w, k))}</b> after ${Math.min(e, CFG.expCap)} round${e > 1 ? 's' : ''} ${TASKS[k]}` : '';
+  const now = k === 'cart' ? ' · driving a cart' : !k ? ''
+    : ` → <b>${pct(effSkill(w, k))}</b> ${e ? `after ${e} round${e > 1 ? 's' : ''} ${TASKS[k]}` : `while new to ${TASKS[k]}`}`;
   const other = Object.entries(w.exp).filter(([t]) => t !== k).map(([t, n]) => `${TASKS[t]} ${n}`).join(', ');
   return `skill ${pct(w.skill)}${now}${other ? ` · experience: ${other}` : ''}`;
 }
 
 function renderWorkers(play, hide) {
   $('workersSection').hidden = hide;
-  const blds = buildingList();
+  const blds = [...buildingList(), ...state.cart.map((b, i) => ({ kind: 'cart', b, name: `🐴 Cart ${i + 1} driver` }))];
   $('wageText').textContent = `wages −${fmt(wagesTotal())} / round`;
   $('workers').innerHTML = state.workers.map(w => {
     const cur = w.at ? `${w.at.kind}:${w.at.id}` : '';
     const opts = [`<option value="">Idle</option>`, ...blds.map(({ kind, b, name }) => {
-      const v = `${kind}:${b.id}`, n = crew(kind, b).length;
-      return `<option value="${v}" ${v === cur ? 'selected' : ''} ${v !== cur && n >= CFG.slots ? 'disabled' : ''}>${name} (${n}/${CFG.slots})</option>`;
+      const v = `${kind}:${b.id}`, n = crew(kind, b).length, full = n >= slotsOf(kind) || b.trip;
+      return `<option value="${v}" ${v === cur ? 'selected' : ''} ${v !== cur && full ? 'disabled' : ''}>${name} (${n}/${slotsOf(kind)})</option>`;
     })].join('');
     return `<div class="row">
       <span class="name">${escapeHtml(w.name)}${w.you ? '<span class="tag">you</span>' : w.family ? '<span class="tag">family</span>' : ''}
         <small>${workerSkill(w)} · ${w.wage ? `wage ${w.wage}` : 'no wage'}</small></span>
-      <span class="btns"><select data-assign="${w.id}" ${play ? '' : 'disabled'} aria-label="Assign ${escapeHtml(w.name)}">${opts}</select>
-        ${w.you || w.family ? '' : `<button ${play ? '' : 'disabled'} data-fire="${w.id}">Let go</button>`}</span>
+      <span class="btns"><select data-assign="${w.id}" ${play && !onTrip(w) ? '' : 'disabled'} aria-label="Assign ${escapeHtml(w.name)}">${opts}</select>
+        ${w.you || w.family ? '' : `<button ${play && !onTrip(w) ? '' : 'disabled'} data-fire="${w.id}">Let go</button>`}</span>
     </div>`;
   }).join('');
   $('applicants').innerHTML = state.applicants.map(a => `<div class="row">
       <span class="name">${escapeHtml(a.name)}<small>skill ${pct(a.skill)} · wage ${a.wage}</small></span>
       <button class="primary" data-hire="${a.id}" ${play ? '' : 'disabled'}>Hire</button>
     </div>`).join('') || '<div class="empty">You hired everyone on offer. New applicants arrive next round.</div>';
+}
+
+// the good picked in each cart's load menu, kept across renders
+const cartPick = {};
+
+function renderCapital(play, hide) {
+  $('capitalSection').hidden = hide;
+  $('capital').innerHTML = GOODS.map(g => {
+    const p = price(g.key, 'city'), vs = p / price(g.key) - 1;
+    return `<div class="row">
+      <span class="name"><span class="dot" style="background:${g.color}"></span>${g.label}
+        <small>normal price ${Math.round(baseOf(g.key, 'city'))} · buyers ~${demandOf(g.key, 'city')}/round</small></span>
+      ${sparkline(state.city[g.key].hist, g.color)}
+      <span class="price">${p}<small class="${Math.abs(vs) < 0.03 ? 'muted' : vs > 0 ? 'pos' : 'neg'}">${vs >= 0 ? '+' : ''}${Math.round(vs * 100)}% vs town</small></span>
+    </div>`;
+  }).join('');
+  const owned = GOODS.filter(g => state.inv[g.key] > 0);
+  $('carts').innerHTML = state.cart.map((c, i) => {
+    const load = cartLoad(c), driver = crew('cart', c)[0];
+    const cargo = Object.entries(c.load).filter(([, n]) => n).map(([k, n]) => `${n} ${lower(k)}`).join(', ');
+    let info = `${driver ? `driver ${escapeHtml(driver.name)}` : '<span class="neg">no driver</span>'} · load ${load}/${CFG.cart.capacity}${cargo ? `: ${cargo}` : ''}`;
+    let btns = '';
+    if (c.trip) {
+      info = c.trip.arrive === state.round ? `${driver ? escapeHtml(driver.name) : 'The driver'} is on the way with ${cargo}, and sells it all in the capital at the end of this round.`
+        : `Heading home with <b>${fmt(c.trip.gold)}</b> gold, back at the end of this round.`;
+    } else {
+      if (!owned.some(g => g.key === cartPick[c.id])) cartPick[c.id] = owned.length ? owned[0].key : '';
+      const pick = cartPick[c.id], can = play && pick && load < CFG.cart.capacity;
+      const worth = Object.entries(c.load).reduce((s, [k, n]) => s + saleValue(k, n, false, 'city'), 0);
+      const why = !load ? 'Load some goods first' : !driver ? 'Assign a driver under Workers' : state.round >= CFG.rounds ? 'Too late: it could not be back in time' : '';
+      btns = `<select data-cartgood="${c.id}" ${play && owned.length ? '' : 'disabled'} aria-label="Good to load">${owned.length
+          ? owned.map(g => `<option value="${g.key}" ${g.key === pick ? 'selected' : ''}>${g.label} (${state.inv[g.key]})</option>`).join('')
+          : '<option>Nothing in stock</option>'}</select>
+        ${[1, 5].map(n => `<button ${can ? '' : 'disabled'} data-load="${c.id}" data-n="${n}">Load ${n}</button>`).join('')}
+        <button ${can ? '' : 'disabled'} data-load="${c.id}" data-n="all">Fill</button>
+        <button ${play && load ? '' : 'disabled'} data-unload="${c.id}">Unload</button>
+        <button class="primary" ${play && !why ? '' : 'disabled'} data-send="${c.id}" title="${why}">Send${load ? ` · worth ~${fmt(worth)} there now` : ''}</button>
+        <button ${play ? '' : 'disabled'} data-sellcart="${c.id}" title="Sell for 50% of what you paid">Sell · ${fmt(Math.round(c.paid * CFG.refund))}</button>`;
+    }
+    return `<div class="row">
+      <span class="name">🐴 Cart ${i + 1}${c.trip ? '<span class="tag">on the road</span>' : ''}<small>${info}</small></span>
+      <span class="btns">${btns}</span>
+    </div>`;
+  }).join('') || `<div class="empty">No carts yet. A cart carries ${CFG.cart.capacity} goods to the capital and back in 2 rounds, with any worker as its driver.</div>`;
+  $('buyCart').textContent = `Buy a cart · ${fmt(cartPrice())} (upkeep ${CFG.cart.upkeep})`;
+  $('buyCart').disabled = !play || state.gold < cartPrice();
 }
 
 function renderOver(perk, final, over) {
@@ -1130,6 +1281,8 @@ function renderStatus(play) {
   if (state.strike) items.push(`<span class="neg">✊ Strike: your mines are idle for ${state.strike} more round${state.strike > 1 ? 's' : ''}.</span>`);
   for (const d of state.debts) items.push(`🎩 You owe <b>${fmt(d.amount)}</b>, due at the end of round ${d.due}.`);
   for (const s of state.rushes) if (s.known) items.push(`🗣️ ${GOOD[s.key].label} prices will soar in round ${s.due}.`);
+  if (state.round >= CFG.rounds && state.cart.some(c => !c.trip && cartLoad(c)))
+    items.push(`<span class="muted">🐴 It's too late for the capital. Cargo still in your carts goes back to the warehouse at the end of this round.</span>`);
   $('statusSection').hidden = !play || !items.length;
   $('status').innerHTML = items.map(i => `<li>${i}</li>`).join('');
 }
@@ -1159,6 +1312,7 @@ function renderReport(hide) {
   if (r.quit && r.quit.length) items.push(`<span class="neg">You couldn't pay ${r.quit.map(escapeHtml).join(', ')}, so they quit.</span>`);
   if (r.forced) items.push(`<span class="neg">You couldn't cover your bills, so goods worth ${fmt(r.forced)} gold were sold automatically.</span>`);
   items.push(...r.events);
+  if (r.carts) items.push(...r.carts);
   if (r.autoSold.length) items.push(`Auto-sold ${r.autoSold.join(', ')}.`);
   if (!items.length) items.push('<span class="muted">You have no buildings yet, so nothing was produced.</span>');
   $('report').innerHTML = items.map(i => `<li>${i}</li>`).join('');
@@ -1188,6 +1342,7 @@ $('buySmith').onclick = () => buy('smith');
 $('buyMint').onclick = () => buy('mint');
 $('buyGlass').onclick = () => buy('glass');
 $('buyStorage').onclick = expandStorage;
+$('buyCart').onclick = buyCart;
 $('endRound').onclick = endRound;
 $('newGame').onclick = restart;
 $('sellEverything').onclick = () => GOODS.forEach(g => sell(g.key, state.inv[g.key]));
@@ -1197,6 +1352,10 @@ document.addEventListener('click', e => {
   const d = t.dataset;
   if (d.sell) return sell(d.sell, d.n === 'all' ? state.inv[d.sell] : Number(d.n));
   if (d.buyraw) return buyRaw(d.buyraw, Number(d.n));
+  if (d.load) return loadCart(Number(d.load), cartPick[d.load], d.n === 'all' ? Infinity : Number(d.n));
+  if (d.unload) { const c = findBuilding('cart', Number(d.unload)); if (c && !c.trip && state.phase === 'play') { unloadCart(c); commit(); } return; }
+  if (d.send) return sendCart(Number(d.send));
+  if (d.sellcart) return sellCart(Number(d.sellcart));
   if (d.hire) return hire(Number(d.hire));
   if (d.fire) return fire(Number(d.fire));
   if (d.upgrade) return upgrade(d.upgrade, Number(d.id));
@@ -1209,6 +1368,7 @@ document.addEventListener('click', e => {
 document.addEventListener('change', e => {
   if (e.target.dataset.order) setOrder(e.target.dataset.order, e.target.value);
   if (e.target.dataset.assign) assign(Number(e.target.dataset.assign), e.target.value);
+  if (e.target.dataset.cartgood) { cartPick[e.target.dataset.cartgood] = e.target.value; render(); }
 });
 
 render();
